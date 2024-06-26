@@ -16,7 +16,7 @@ func (MS *MemoryWallServer) New() {
 }
 
 func (MS *MemoryWallServer) Start() {
-	if err := MS.ginServer.Run(); err != nil {
+	if err := MS.ginServer.Run("8081"); err != nil {
 		panic(err)
 	}
 }
