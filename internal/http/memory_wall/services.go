@@ -1,9 +1,9 @@
 package memorywall
 
 import (
-	"io"
 	"memory_wall/lib/utils"
 	"mime/multipart"
+
 )
 
 type MemoryWallService struct {
@@ -16,14 +16,12 @@ func (MS *MemoryWallService) parseDocx(file multipart.FileHeader) (ParseDocxResp
 	if err != nil {
 		return ParseDocxResponse{}, err
 	}
-	_, err = io.ReadAll(openedFile)
-	if err != nil {
-		return ParseDocxResponse{}, err
-	}
+
 	name := utils.GetFileNameWithOutExt(file.Filename)
+	description := utils.GetTextFromFile(openedFile, file.Size)
 	var humanInfo HumanInfo = HumanInfo{
 		Name: name,
-		Description: "test",
+		Description: description,
 		Image: "test",
 	}
 
@@ -34,10 +32,10 @@ func (MS *MemoryWallService) parseDocx(file multipart.FileHeader) (ParseDocxResp
 	return resp, nil
 }
 
-func (MS *MemoryWallService) getAllDocxFileInfoFromStorage(path string) ([]string, error) {
-	names, err := utils.WalkInDirAndFindAllFileNames(path)
-	if err != nil {
-		return []string{}, err
-	}
-	return names, nil
-}
+// func (MS *MemoryWallService) getAllDocxFileInfoFromStorage(path string) ([]string, error) {
+// 	names, err := utils.WalkInDirAndFindAllFileNames(path)
+// 	if err != nil {
+// 		return []string{}, err
+// 	}
+// 	return names, nil
+// }

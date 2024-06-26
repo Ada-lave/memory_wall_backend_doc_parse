@@ -42,18 +42,18 @@ func (MN *MemoryWallNET) parseDocx() {
 	})
 }
 
-func (MN *MemoryWallNET) parseAllDocxInStorage() {
-	MN.router.Router.GET("docx/first-load", func (c *gin.Context) {
-		names, err := MN.service.getAllDocxFileInfoFromStorage("/home/ada/Загрузки/ИНТЕРАКТИВНАЯ СТЕНА ПАМЯТИ/БЕССМЕРТНЫЙ ПОЛК. Стена памяти")
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "falied load first data",
-			})
-			return
-		}
+// func (MN *MemoryWallNET) parseAllDocxInStorage() {
+// 	MN.router.Router.GET("docx/first-load", func (c *gin.Context) {
+// 		names, err := MN.service.getAllDocxFileInfoFromStorage("/home/ada/Загрузки/ИНТЕРАКТИВНАЯ СТЕНА ПАМЯТИ/БЕССМЕРТНЫЙ ПОЛК. Стена памяти")
+// 		if err != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "falied load first data",
+// 			})
+// 			return
+// 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"data": names,
-		})
-	})
-}
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"data": names,
+// 		})
+// 	})
+// }
