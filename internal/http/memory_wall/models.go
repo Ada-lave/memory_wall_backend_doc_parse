@@ -3,7 +3,7 @@ package memorywall
 import "mime/multipart"
 
 type ParseDocxRequest struct {
-	File *multipart.FileHeader `form:"file" binding:"required"`
+	Files *[]multipart.FileHeader `form:"files" binding:"required"`
 }
 
 type ParseDocxResponse struct {
