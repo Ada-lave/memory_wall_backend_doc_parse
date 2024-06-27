@@ -1,7 +1,6 @@
 package memorywall
 
 import (
-	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -14,7 +13,6 @@ func (MS *MemoryWallService) parseDocx(files []multipart.FileHeader) ([]ParseDoc
 	var response []ParseDocxResponse
 
 	for _, file := range files {
-		fmt.Println(file)
 		openedFile, err := file.Open()
 		if err != nil {
 			return []ParseDocxResponse{}, err
