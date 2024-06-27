@@ -1,6 +1,7 @@
 package memorywall
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,8 +31,9 @@ func (MN *MemoryWallNET) parseDocx() {
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "failed parse docx",
+				"error": err.Error(),
 			})
+			fmt.Println(err.Error())
 			return
 		}
 
