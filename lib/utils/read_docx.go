@@ -51,12 +51,12 @@ func (DR *DocxReader) GetFullDescription(sep string) string {
 }
 
 func (DR *DocxReader) GetPlaceOfBirth() string {
-	if DR.FullText == "" {
-		DR.GetFullDescription("<br>")
-	}
-	placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
+    if DR.FullText == "" {
+        DR.GetFullDescription("<br>")
+    }
+    placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
 
-	return placeOfBirth
+    return placeOfBirth
 }
 
 func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
@@ -76,6 +76,44 @@ func (DR *DocxReader) GetMilitaryRank() string {
 	rank := extractDataFromText(DR.FullText, "Воинское звание, должность", "<br>")
 
 	return rank
+}
+
+func (DR *DocxReader) GetMedals() []string {
+	var awards []string
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+	if strings.Contains(DR.FullText, "Награды:") {
+		textOfMedal := strings.Split(DR.FullText, "Награды:")[1]
+		for _ ,medal := range strings.Split(textOfMedal, "<br>") {
+			if medal != "" && strings.Contains(strings.ToLower(medal), "медаль") {
+				awards = append(awards, medal)
+			}
+		}
+	}
+	return awards
+}
+
+func (DR *DocxReader) GetImages() []byte {
+	for _, item := range DR.Document.Document.Body.Items {
+		switch paragraph := item.(type) {
+		case *docx.Paragraph:
+			for _, ch := range paragraph.Children {
+				switch run := ch.(type) {
+				case *docx.Run:
+					for _, ch := range run.Children {
+						switch draw := ch.(type) {
+						case *docx.Drawing:
+							fmt.Printf("Image: %#v\n",draw.Inline.Graphic.GraphicData.Pic.BlipFill.Blip)
+						}
+					}
+				}
+			}
+		}
+		
+	}
+
+	return []byte{}
 }
 
 func formatText(text string) string {
