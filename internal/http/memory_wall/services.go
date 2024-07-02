@@ -20,15 +20,13 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
-		name := utils.GetFileNameWithOutExt(file.Filename)
-		description :=	docReader.GetFullDescription("<br>")
-		placeOfBirth := docReader.GetPlaceOfBirth()
-		dateAndPlaceOfСonscription := docReader.GetPlaceAndDateOfСonscription()
+
 		var humanInfo HumanInfo = HumanInfo{
-			Name: name,
-			Description: description,
-			PlaceOfBirth: placeOfBirth,
-			DateAndPlaceOfСonscription: dateAndPlaceOfСonscription,
+			Name: utils.GetFileNameWithOutExt(file.Filename),
+			Description: docReader.GetFullDescription("<br>"),
+			PlaceOfBirth: docReader.GetPlaceOfBirth(),
+			DateAndPlaceOfСonscription: docReader.GetPlaceAndDateOfСonscription(),
+			MilitaryRank: docReader.GetMilitaryRank(),
 			Image: "test",
 		}
 

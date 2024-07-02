@@ -54,26 +54,28 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
-	if strings.Contains(DR.FullText, "Место рождения") {
-		placeOfBirth := strings.Split(strings.Split(DR.FullText, "Место рождения")[1], "<br>")[0]
-		formattedText := formatText(placeOfBirth)
-		return formattedText
-	} 
-	return ""
+	placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
+	
+	return placeOfBirth
 }
 
 func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
+    placeAndDateOfСonscription := extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
 
-	if strings.Contains(DR.FullText, "Место и дата призыва") {
-        placeAndDateOfСonscription := strings.Split(strings.Split(DR.FullText, "Место и дата призыва")[1], "<br>")[0]
-        formattedText := formatText(placeAndDateOfСonscription)
-        return formattedText
-    }
+	return placeAndDateOfСonscription
+}
 
-	return ""
+func (DR *DocxReader) GetMilitaryRank() string {
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+
+	rank := extractDataFromText(DR.FullText, "Воинское звание, должность", "<br>")
+
+	return rank
 }
 
 func formatText(text string) string {
@@ -81,4 +83,14 @@ func formatText(text string) string {
 	text = strings.TrimSpace(text)
 
 	return text
+}
+
+func extractDataFromText(text string, sub string, sep string) string {
+	if strings.Contains(text, sub) {
+		militaryRank := strings.Split(strings.Split(text, sub)[1], sep)[0]
+		formattedText := formatText(militaryRank)
+
+		return formattedText
+	}
+	return ""
 }
