@@ -27,7 +27,7 @@ func (MN *MemoryWallNET) parseDocx() {
 			return
 		}
 
-		response, err := MN.service.parseDocx(*request.Files)
+		response, err := MN.service.ParseDocx(*request.Files)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{

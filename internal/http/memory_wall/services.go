@@ -6,23 +6,27 @@ import (
 )
 
 type MemoryWallService struct {
-
+	Response []ParseDocxResponse
 }
 
-func (MS *MemoryWallService) parseDocx(files []multipart.FileHeader) ([]ParseDocxResponse, error) {
-	var response []ParseDocxResponse
-
-	for _, file := range files {
+func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDocxResponse, error) {
+	for _, file := range files {	
 		openedFile, err := file.Open()
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
-
+		var docReader utils.DocxReader
+		docReader, err = docReader.NewDocxReader(openedFile, file.Size)
+		if err != nil {
+			return []ParseDocxResponse{}, err
+		}
 		name := utils.GetFileNameWithOutExt(file.Filename)
-		description := utils.GetTextFromFile(openedFile, file.Size)
+		description :=	docReader.GetFullDescription("<br>")
+		placeOfBirth := docReader.GetPlaceOfBirth()
 		var humanInfo HumanInfo = HumanInfo{
 			Name: name,
 			Description: description,
+			PlaceOfBirth: placeOfBirth,
 			Image: "test",
 		}
 
@@ -30,17 +34,8 @@ func (MS *MemoryWallService) parseDocx(files []multipart.FileHeader) ([]ParseDoc
 			Filename: file.Filename,
 			HumanInfo: humanInfo,
 		}
-		response = append(response, resp)
+		MS.Response = append(MS.Response, resp)
 	}
 
-	return response, nil
+	return MS.Response, nil
 }
-
-
-// func (MS *MemoryWallService) getAllDocxFileInfoFromStorage(path string) ([]string, error) {
-// 	names, err := utils.WalkInDirAndFindAllFileNames(path)
-// 	if err != nil {
-// 		return []string{}, err
-// 	}
-// 	return names, nil
-// }
