@@ -14,7 +14,8 @@ type ParseDocxResponse struct {
 type HumanInfo struct {
 	Name string `json:"name"`
 	Description string `json:"description"`
-	Image string `json:"image"`
 	PlaceOfBirth string `json:"place_of_birth"`
+	DateAndPlaceOfСonscription string `json:"date_and_place_of_conscription"`
+	Image string `json:"image"`
 
 }

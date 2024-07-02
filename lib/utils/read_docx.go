@@ -56,7 +56,29 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 	}
 	if strings.Contains(DR.FullText, "Место рождения") {
 		placeOfBirth := strings.Split(strings.Split(DR.FullText, "Место рождения")[1], "<br>")[0]
-		return placeOfBirth
-	 }
+		formattedText := formatText(placeOfBirth)
+		return formattedText
+	} 
 	return ""
+}
+
+func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+
+	if strings.Contains(DR.FullText, "Место и дата призыва") {
+        placeAndDateOfСonscription := strings.Split(strings.Split(DR.FullText, "Место и дата призыва")[1], "<br>")[0]
+        formattedText := formatText(placeAndDateOfСonscription)
+        return formattedText
+    }
+
+	return ""
+}
+
+func formatText(text string) string {
+	text = strings.ReplaceAll(text, ":", "")
+	text = strings.TrimSpace(text)
+
+	return text
 }

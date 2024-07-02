@@ -23,10 +23,12 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		name := utils.GetFileNameWithOutExt(file.Filename)
 		description :=	docReader.GetFullDescription("<br>")
 		placeOfBirth := docReader.GetPlaceOfBirth()
+		dateAndPlaceOfСonscription := docReader.GetPlaceAndDateOfСonscription()
 		var humanInfo HumanInfo = HumanInfo{
 			Name: name,
 			Description: description,
 			PlaceOfBirth: placeOfBirth,
+			DateAndPlaceOfСonscription: dateAndPlaceOfСonscription,
 			Image: "test",
 		}
 
