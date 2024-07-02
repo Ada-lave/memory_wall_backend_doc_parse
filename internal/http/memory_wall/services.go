@@ -10,7 +10,7 @@ type MemoryWallService struct {
 }
 
 func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDocxResponse, error) {
-	for _, file := range files {	
+	for _, file := range files {
 		openedFile, err := file.Open()
 		if err != nil {
 			return []ParseDocxResponse{}, err
@@ -22,16 +22,16 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 
 		var humanInfo HumanInfo = HumanInfo{
-			Name: utils.GetFileNameWithOutExt(file.Filename),
-			Description: docReader.GetFullDescription("<br>"),
-			PlaceOfBirth: docReader.GetPlaceOfBirth(),
+			Name:                       utils.GetFileNameWithOutExt(file.Filename),
+			Description:                docReader.GetFullDescription("<br>"),
+			PlaceOfBirth:               docReader.GetPlaceOfBirth(),
 			DateAndPlaceOfСonscription: docReader.GetPlaceAndDateOfСonscription(),
-			MilitaryRank: docReader.GetMilitaryRank(),
-			Image: "test",
+			MilitaryRank:               docReader.GetMilitaryRank(),
+			Image:                      "test",
 		}
 
 		var resp ParseDocxResponse = ParseDocxResponse{
-			Filename: file.Filename,
+			Filename:  file.Filename,
 			HumanInfo: humanInfo,
 		}
 		MS.Response = append(MS.Response, resp)

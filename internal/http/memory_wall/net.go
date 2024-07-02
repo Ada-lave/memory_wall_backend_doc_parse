@@ -8,11 +8,11 @@ import (
 )
 
 type MemoryWallNET struct {
-	router MemoryWallRouter
+	router  MemoryWallRouter
 	service MemoryWallService
 }
 
-func  (MN *MemoryWallNET) Start(e *gin.Engine) error {
+func (MN *MemoryWallNET) Start(e *gin.Engine) error {
 	MN.router.New(e)
 	MN.parseDocx()
 	// MN.parseAllDocxInStorage()
@@ -37,7 +37,6 @@ func (MN *MemoryWallNET) parseDocx() {
 			return
 		}
 
-		
 		c.JSON(http.StatusOK, gin.H{
 			"data": response,
 		})

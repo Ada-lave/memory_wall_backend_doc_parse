@@ -23,28 +23,28 @@ func (DR DocxReader) NewDocxReader(file multipart.File, size int64) (DocxReader,
 	return DR, nil
 }
 
-func (DR *DocxReader) GetFullDescription(sep string) string { 
+func (DR *DocxReader) GetFullDescription(sep string) string {
 	var buf strings.Builder
 
-	for _, it := range DR.Document.Document.Body.Items { 
+	for _, it := range DR.Document.Document.Body.Items {
 		switch it.(type) {
-        case *docx.Paragraph:
-            for _, pc := range it.(*docx.Paragraph).Children {
-                switch pc.(type) {
-                case *docx.Hyperlink:
-                    buf.WriteString(fmt.Sprintf("%v", pc.(*docx.Hyperlink).Run.Children[0].(*docx.Text).Text))
-                case *docx.Run:
-                    for _, text := range pc.(*docx.Run).Children {
+		case *docx.Paragraph:
+			for _, pc := range it.(*docx.Paragraph).Children {
+				switch pc.(type) {
+				case *docx.Hyperlink:
+					buf.WriteString(fmt.Sprintf("%v", pc.(*docx.Hyperlink).Run.Children[0].(*docx.Text).Text))
+				case *docx.Run:
+					for _, text := range pc.(*docx.Run).Children {
 						switch t := text.(type) {
 						case *docx.Text:
 							buf.WriteString(t.Text)
 						}
-                        
-                    }
-                }
-            }
-            buf.WriteString(sep)
-        }
+
+					}
+				}
+			}
+			buf.WriteString(sep)
+		}
 	}
 	DR.FullText = buf.String()
 	return buf.String()
@@ -55,7 +55,7 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 		DR.GetFullDescription("<br>")
 	}
 	placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
-	
+
 	return placeOfBirth
 }
 
@@ -63,7 +63,7 @@ func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
-    placeAndDateOfСonscription := extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
+	placeAndDateOfСonscription := extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
 
 	return placeAndDateOfСonscription
 }

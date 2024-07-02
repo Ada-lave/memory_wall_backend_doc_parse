@@ -6,9 +6,6 @@ import (
 	"strings"
 )
 
-
- 
-
 func WalkInDirAndFindAllFileNames(dirPath string) ([]string, error) {
 	files, err := os.ReadDir(dirPath)
 	var fileNames []string
@@ -20,7 +17,6 @@ func WalkInDirAndFindAllFileNames(dirPath string) ([]string, error) {
 	}
 	return fileNames, nil
 }
-
 
 func GetFileNameWithOutExt(filename string) string {
 	return strings.TrimSuffix(filename, filepath.Ext(filename))

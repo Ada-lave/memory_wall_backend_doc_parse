@@ -8,4 +8,4 @@ type MemoryWallRouter struct {
 
 func (MR *MemoryWallRouter) New(e *gin.Engine) {
 	MR.Router = e.Group("parse")
-} 
+}

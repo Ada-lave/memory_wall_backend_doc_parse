@@ -27,11 +27,10 @@ func main() {
 		panic(err)
 	}
 
-
 	convertToPdfAll(files, currDir, outDir)
 }
 
-func convertToPdfAll(files []fs.DirEntry, path string, outDir string)  {
+func convertToPdfAll(files []fs.DirEntry, path string, outDir string) {
 	for _, file := range files {
 		if file.IsDir() {
 			outDir = filepath.Join(outDir, file.Name())
@@ -44,10 +43,10 @@ func convertToPdfAll(files []fs.DirEntry, path string, outDir string)  {
 			convertToPdfAll(files, path, outDir)
 			fmt.Println("MK DIR")
 		} else {
-			
+
 			convertToPdf(filepath.Join(path, file.Name()), outDir)
 			fmt.Printf("Convert :%v\n", path)
-		}	
+		}
 	}
 }
 
@@ -58,7 +57,6 @@ func convertToPdf(path string, outPath string) {
 	arg3 := "pdf"
 	arg4 := "--outdir"
 
-
 	_, err := exec.Command(arg0, arg1, arg2, arg3, path, arg4, outPath).Output()
 
 	if err != nil {
@@ -67,5 +65,3 @@ func convertToPdf(path string, outPath string) {
 
 	fmt.Printf("%v\n", outPath)
 }
-
-

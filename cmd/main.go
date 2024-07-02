@@ -8,7 +8,6 @@ import (
 
 type MemoryWallServer struct {
 	ginServer *gin.Engine
-
 }
 
 func (MS *MemoryWallServer) New() {
