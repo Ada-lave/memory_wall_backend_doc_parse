@@ -65,6 +65,16 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 	return placeOfBirth
 }
 
+func (DR *DocxReader) GetBirthDate() string {
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+
+	
+
+	return ""
+}
+
 func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")

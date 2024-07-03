@@ -17,6 +17,9 @@ func setupEngine() *gin.Engine {
 }
 
 func main() {
+	// init logger
+
+	// init server
 	server := setupEngine()
 	memorywall.InitMemoryWallRouter(server)
 
