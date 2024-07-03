@@ -20,8 +20,9 @@ func (MN *MemoryWallNET) Start(e *gin.Engine) error {
 }
 
 func (MN *MemoryWallNET) parseDocx() {
-	var request ParseDocxRequest
+	
 	MN.router.Router.POST("/docx", func(c *gin.Context) {
+		var request ParseDocxRequest
 		if err := c.ShouldBind(&request); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"validation error": err.Error()})
 			return
