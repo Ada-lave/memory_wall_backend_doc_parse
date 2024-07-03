@@ -11,6 +11,7 @@ import (
 	"github.com/fumiama/go-docx"
 )
 
+var textFormatter TextFormatter = TextFormatter{}
 type DocxReader struct {
 	Document *docx.Docx
 	File     multipart.File
@@ -24,6 +25,7 @@ func (DR DocxReader) NewDocxReader(file multipart.File, size int64) (DocxReader,
 		return DocxReader{}, err
 	}
 	DR.File = file
+
 	return DR, nil
 }
 
@@ -58,7 +60,7 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
-	placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
+	placeOfBirth := textFormatter.extractDataFromText(DR.FullText, "Место рождения", "<br>")
 
 	return placeOfBirth
 }
@@ -67,7 +69,7 @@ func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
-	placeAndDateOfСonscription := extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
+	placeAndDateOfСonscription := textFormatter.extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
 
 	return placeAndDateOfСonscription
 }
@@ -77,7 +79,11 @@ func (DR *DocxReader) GetMilitaryRank() string {
 		DR.GetFullDescription("<br>")
 	}
 
-	rank := extractDataFromText(DR.FullText, "Воинское звание, должность", "<br>")
+	rank := textFormatter.extractDataFromText(DR.FullText, "Воинское звание, должность", "<br>")
+
+	if len(rank) == 0 {
+		rank = textFormatter.extractDataFromText(DR.FullText, "Воинское звание", "<br>")
+	}
 
 	return rank
 }
@@ -134,21 +140,4 @@ func (DR *DocxReader) GetImages() (map[string][]byte, error) {
 	return images, nil
 }
 
-// TODO: Перенести функционал работы с текстом в отдельный класс
-func formatText(text string) string {
-	text = strings.ReplaceAll(text, ":", "")
-	text = strings.TrimSpace(text)
 
-	return text
-}
-
-// TODO: Перенести функционал работы с текстом в отдельный класс
-func extractDataFromText(text string, sub string, sep string) string {
-	if strings.Contains(text, sub) {
-		militaryRank := strings.Split(strings.Split(text, sub)[1], sep)[0]
-		formattedText := formatText(militaryRank)
-
-		return formattedText
-	}
-	return ""
-}
