@@ -2,10 +2,14 @@ package memorywall
 
 import "github.com/gin-gonic/gin"
 
-type MemoryWallRouter struct {
-	Router *gin.RouterGroup
-}
 
-func (MR *MemoryWallRouter) New(e *gin.Engine) {
-	MR.Router = e.Group("parse")
-}
+
+func InitMemoryWallRouter(e *gin.Engine) {
+
+	group := e.Group("parse")
+	service := newMemoryWallService()
+	controller := NewMemoryWallController(service)
+	
+	group.POST("/docx", controller.ParseDocx)
+} 
+

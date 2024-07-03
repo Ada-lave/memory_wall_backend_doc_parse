@@ -7,17 +7,21 @@ import (
 )
 
 type MemoryWallService struct {
-	Response []ParseDocxResponse
+}
+
+func newMemoryWallService() *MemoryWallService {
+	return &MemoryWallService{}
 }
 
 func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDocxResponse, error) {
+	var response []ParseDocxResponse
 	for _, file := range files {
 		openedFile, err := file.Open()
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
 		defer openedFile.Close()
-		
+
 		var docReader utils.DocxReader
 		docReader, err = docReader.NewDocxReader(openedFile, file.Size)
 		if err != nil {
@@ -49,10 +53,10 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			Filename:  file.Filename,
 			HumanInfo: humanInfo,
 		}
-		MS.Response = append(MS.Response, resp)
+		response = append(response, resp)
 	}
 
-	return MS.Response, nil
+	return response, nil
 }
 
 func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {
