@@ -1,6 +1,7 @@
 package memorywall
 
 import (
+	"encoding/base64"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -15,13 +16,25 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
+		defer openedFile.Close()
+		
 		var docReader utils.DocxReader
 		docReader, err = docReader.NewDocxReader(openedFile, file.Size)
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
 
-		// docReader.GetImages()
+		images, err := docReader.GetImages()
+
+		if err != nil {
+			return []ParseDocxResponse{}, err
+		}
+
+		preparedImages, err := MS.PrepareImagesToSend(images)
+		if err != nil {
+			return []ParseDocxResponse{}, err
+		}
+
 		var humanInfo HumanInfo = HumanInfo{
 			Name:                       utils.GetFileNameWithOutExt(file.Filename),
 			Description:                docReader.GetFullDescription("<br>"),
@@ -29,7 +42,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			DateAndPlaceOfСonscription: docReader.GetPlaceAndDateOfСonscription(),
 			MilitaryRank:               docReader.GetMilitaryRank(),
 			Awards:                     docReader.GetMedals(),
-			Image:                      "test",
+			Images:                     preparedImages,
 		}
 
 		var resp ParseDocxResponse = ParseDocxResponse{
@@ -40,4 +53,13 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 	}
 
 	return MS.Response, nil
+}
+
+func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {
+	convertedImages := make(map[string]string)
+	for imgName, imgData := range images {
+		convertedImages[imgName] = base64.StdEncoding.EncodeToString(imgData)
+	}
+
+	return convertedImages, nil
 }

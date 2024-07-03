@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"archive/zip"
+	"bytes"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"strings"
 
@@ -10,6 +13,7 @@ import (
 
 type DocxReader struct {
 	Document *docx.Docx
+	File     multipart.File
 	FullText string
 }
 
@@ -19,7 +23,7 @@ func (DR DocxReader) NewDocxReader(file multipart.File, size int64) (DocxReader,
 	if err != nil {
 		return DocxReader{}, err
 	}
-
+	DR.File = file
 	return DR, nil
 }
 
@@ -51,12 +55,12 @@ func (DR *DocxReader) GetFullDescription(sep string) string {
 }
 
 func (DR *DocxReader) GetPlaceOfBirth() string {
-    if DR.FullText == "" {
-        DR.GetFullDescription("<br>")
-    }
-    placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+	placeOfBirth := extractDataFromText(DR.FullText, "Место рождения", "<br>")
 
-    return placeOfBirth
+	return placeOfBirth
 }
 
 func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
@@ -85,7 +89,7 @@ func (DR *DocxReader) GetMedals() []string {
 	}
 	if strings.Contains(DR.FullText, "Награды:") {
 		textOfMedal := strings.Split(DR.FullText, "Награды:")[1]
-		for _ ,medal := range strings.Split(textOfMedal, "<br>") {
+		for _, medal := range strings.Split(textOfMedal, "<br>") {
 			if medal != "" && strings.Contains(strings.ToLower(medal), "медаль") {
 				awards = append(awards, medal)
 			}
@@ -94,28 +98,43 @@ func (DR *DocxReader) GetMedals() []string {
 	return awards
 }
 
-func (DR *DocxReader) GetImages() []byte {
-	for _, item := range DR.Document.Document.Body.Items {
-		switch paragraph := item.(type) {
-		case *docx.Paragraph:
-			for _, ch := range paragraph.Children {
-				switch run := ch.(type) {
-				case *docx.Run:
-					for _, ch := range run.Children {
-						switch draw := ch.(type) {
-						case *docx.Drawing:
-							fmt.Printf("Image: %#v\n",draw.Inline.Graphic.GraphicData.Pic.BlipFill.Blip)
-						}
-					}
-				}
-			}
-		}
-		
+func (DR *DocxReader) GetImages() (map[string][]byte, error) {
+	fileBytes, err := io.ReadAll(DR.File)
+	if err != nil {
+		return nil, err
 	}
 
-	return []byte{}
+	zipReader, err := zip.NewReader(bytes.NewReader(fileBytes), int64(len(fileBytes)))
+	if err != nil {
+		return nil, err
+	}
+
+	images := make(map[string][]byte)
+
+	for _, zipFile := range zipReader.File {
+		fmt.Println(zipFile.Name)
+		if strings.Contains(zipFile.Name, "word/media") {
+			imageReader, err := zipFile.Open()
+			if err != nil {
+				return nil, err
+			}
+			defer imageReader.Close()
+
+			imagesBytes, err := io.ReadAll(imageReader)
+
+			if err != nil {
+				return nil, err
+			}
+
+			imageName := strings.Split(zipFile.Name, "/")[2]
+			images[imageName] = imagesBytes
+		}
+	}
+
+	return images, nil
 }
 
+// TODO: Перенести функционал работы с текстом в отдельный класс
 func formatText(text string) string {
 	text = strings.ReplaceAll(text, ":", "")
 	text = strings.TrimSpace(text)
@@ -123,6 +142,7 @@ func formatText(text string) string {
 	return text
 }
 
+// TODO: Перенести функционал работы с текстом в отдельный класс
 func extractDataFromText(text string, sub string, sep string) string {
 	if strings.Contains(text, sub) {
 		militaryRank := strings.Split(strings.Split(text, sub)[1], sep)[0]
