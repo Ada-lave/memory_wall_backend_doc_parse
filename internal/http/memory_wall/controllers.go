@@ -13,7 +13,6 @@ type MemoryWallController struct {
 
 func NewMemoryWallController(service *MemoryWallService) *MemoryWallController {
 
-	
 	return &MemoryWallController{service: service}
 }
 
