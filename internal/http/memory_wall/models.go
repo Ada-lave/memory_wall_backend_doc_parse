@@ -23,5 +23,5 @@ type HumanInfo struct {
 	DateAndPlaceOfСonscription string            `json:"date_and_place_of_conscription"`
 	MilitaryRank               string            `json:"military_rank_and_position"`
 	Awards                     []string          `json:"awards"`
-	Images                     map[string]string `json:"images"`
+	Images                     []map[string][]byte `json:"images"`
 }

@@ -4,11 +4,11 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
+	"github.com/fumiama/go-docx"
 	"io"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
-	"github.com/fumiama/go-docx"
 )
 
 var textFormatter utils.TextFormatter = utils.TextFormatter{}
@@ -37,7 +37,6 @@ func (HIR *HumanInfoReader) GetFIO() []string {
 
 	if len(FIO) != 3 {
 		splitedNames := strings.Split(data[1], " ")
-		fmt.Printf("%#v\n", FIO)
 		FIO = append(FIO, splitedNames[0])
 		FIO = append(FIO, splitedNames[1])
 	}
@@ -120,7 +119,10 @@ func (HIR *HumanInfoReader) GetMedals() []string {
 	return awards
 }
 
-func (HIR *HumanInfoReader) GetImages() (map[string][]byte, error) {
+func (HIR *HumanInfoReader) GetImages() ([]map[string][]byte, error) {
+
+	var images []map[string][]byte
+
 	fileBytes, err := io.ReadAll(HIR.File)
 	if err != nil {
 		return nil, err
@@ -131,9 +133,10 @@ func (HIR *HumanInfoReader) GetImages() (map[string][]byte, error) {
 		return nil, err
 	}
 
-	images := make(map[string][]byte)
+	image := make(map[string][]byte)
 
 	for _, zipFile := range zipReader.File {
+		fmt.Println(zipFile.Name)
 		if strings.Contains(zipFile.Name, "word/media") {
 			imageReader, err := zipFile.Open()
 			if err != nil {
@@ -148,7 +151,9 @@ func (HIR *HumanInfoReader) GetImages() (map[string][]byte, error) {
 			}
 
 			imageName := strings.Split(zipFile.Name, "/")[2]
-			images[imageName] = imagesBytes
+			image[imageName] = imagesBytes
+			images = append(images, image)
+
 		}
 	}
 
