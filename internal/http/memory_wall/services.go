@@ -2,7 +2,9 @@ package memorywall
 
 import (
 	"encoding/base64"
+	"memory_wall/internal/http/memory_wall/models"
 	human_utils "memory_wall/internal/utils"
+
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -14,32 +16,32 @@ func newMemoryWallService() *MemoryWallService {
 	return &MemoryWallService{}
 }
 
-func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDocxResponse, error) {
-	var response []ParseDocxResponse
+func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.ParseDocxResponse, error) {
+	var response []models.ParseDocxResponse
 	for _, file := range files {
 		openedFile, err := file.Open()
 		if err != nil {
-			return []ParseDocxResponse{}, err
+			return []models.ParseDocxResponse{}, err
 		}
 		defer openedFile.Close()
 
 		humanReader, err := human_utils.ReadFromDocx(openedFile, file.Size)
 		if err != nil {
-			return []ParseDocxResponse{}, err
+			return []models.ParseDocxResponse{}, err
 		}
 
 		images, err := humanReader.GetImages()
 		if err != nil {
-			return []ParseDocxResponse{}, err
+			return []models.ParseDocxResponse{}, err
 		}
 
 		// preparedImages, err := MS.PrepareImagesToSend(images)
 		if err != nil {
-			return []ParseDocxResponse{}, err
+			return []models.ParseDocxResponse{}, err
 		}
 
 		FIO := humanReader.GetFIO()
-		var humanInfo HumanInfo = HumanInfo{
+		var humanInfo models.HumanInfo = models.HumanInfo{
 			Description:                humanReader.GetFullDescription("<br>"),
 			PlaceOfBirth:               humanReader.GetPlaceOfBirth(),
 			DateAndPlaceOfСonscription: humanReader.GetPlaceAndDateOfСonscription(),
@@ -62,7 +64,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			humanInfo.Deathday = birthDates[1]
 		}
 
-		var resp ParseDocxResponse = ParseDocxResponse{
+		var resp models.ParseDocxResponse = models.ParseDocxResponse{
 			Filename:  file.Filename,
 			HumanInfo: humanInfo,
 		}

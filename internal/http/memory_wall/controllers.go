@@ -2,6 +2,7 @@ package memorywall
 
 import (
 	"fmt"
+	"memory_wall/internal/http/memory_wall/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,7 @@ func NewMemoryWallController(service *MemoryWallService) *MemoryWallController {
 }
 
 func (MN *MemoryWallController) ParseDocx(c *gin.Context) {
-	var request ParseDocxRequest
+	var request models.ParseDocxRequest
 	if err := c.ShouldBind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"validation error": err.Error()})
 		return

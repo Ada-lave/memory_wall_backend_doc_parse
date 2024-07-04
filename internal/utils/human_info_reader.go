@@ -4,11 +4,13 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
-	"github.com/fumiama/go-docx"
 	"io"
+	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
+
+	"github.com/fumiama/go-docx"
 )
 
 var textFormatter utils.TextFormatter = utils.TextFormatter{}
@@ -119,9 +121,9 @@ func (HIR *HumanInfoReader) GetMedals() []string {
 	return awards
 }
 
-func (HIR *HumanInfoReader) GetImages() ([]map[string][]byte, error) {
+func (HIR *HumanInfoReader) GetImages() ([]models.HumanInfoImage, error) {
 
-	var images []map[string][]byte
+	var images []models.HumanInfoImage
 
 	fileBytes, err := io.ReadAll(HIR.File)
 	if err != nil {
@@ -133,7 +135,7 @@ func (HIR *HumanInfoReader) GetImages() ([]map[string][]byte, error) {
 		return nil, err
 	}
 
-	image := make(map[string][]byte)
+	image := models.HumanInfoImage{}
 
 	for _, zipFile := range zipReader.File {
 		if strings.Contains(zipFile.Name, "word/media") {
@@ -150,7 +152,8 @@ func (HIR *HumanInfoReader) GetImages() ([]map[string][]byte, error) {
 			}
 
 			imageName := strings.Split(zipFile.Name, "/")[2]
-			image[imageName] = imagesBytes
+			image.Name = imageName
+			image.Data = imagesBytes
 			images = append(images, image)
 
 		}

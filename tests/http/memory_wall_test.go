@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	memorywall "memory_wall/internal/http/memory_wall"
+	"memory_wall/internal/http/memory_wall/models"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -69,7 +70,7 @@ func TestParseDocx(t *testing.T) {
 
 	server.ServeHTTP(responseRecorder, req)
 
-	var response memorywall.ParseDocxResponse
+	var response models.ParseDocxResponse
 
 	err = json.Unmarshal(responseRecorder.Body.Bytes(), &response)
 

@@ -1,4 +1,4 @@
-package memorywall
+package models
 
 import "mime/multipart"
 
@@ -23,5 +23,10 @@ type HumanInfo struct {
 	DateAndPlaceOfСonscription string            `json:"date_and_place_of_conscription"`
 	MilitaryRank               string            `json:"military_rank_and_position"`
 	Awards                     []string          `json:"awards"`
-	Images                     []map[string][]byte `json:"images"`
+	Images                     []HumanInfoImage `json:"images"`
+}
+
+type HumanInfoImage struct {
+	Name string `json:"name"`
+	Data []byte `json:"data"`
 }
