@@ -7,9 +7,7 @@ import (
 	"io"
 	"memory_wall/lib/utils"
 	"mime/multipart"
-	"regexp"
 	"strings"
-
 	"github.com/fumiama/go-docx"
 )
 
@@ -168,7 +166,7 @@ func (HIR *HumanInfoReader) GetBirthDate() []string {
 			if len(dates) == 2 {
 				dates[0] = strings.Trim(dates[0], " ")
 				dates[1] = strings.Trim(dates[1], " ")
-				if checkStringIsDate(dates[0]) || checkStringIsDate(dates[1]) {
+				if utils.CheckStringIsDate(dates[0]) || utils.CheckStringIsDate(dates[1]) {
 
 					return dates
 				}
@@ -189,18 +187,4 @@ func ReadFromDocx(file multipart.File, size int64) (HumanInfoReader, error) {
 	humanInfoReader.File = file
 
 	return humanInfoReader, nil
-}
-
-func checkStringIsDate(date string) bool {
-	var datePattern1 = `^\d{1,2} (январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
-	var datePattern2 = `^(январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
-	var datePattern3 = `\d{4}`
-	var datePattern4 = `^d{1,2}\d{1,2}.\d{4}$`
-
-	matched1, _ := regexp.MatchString(datePattern1, date)
-	matched2, _ := regexp.MatchString(datePattern2, date)
-	matched3, _ := regexp.MatchString(datePattern3, date)
-	matched4, _ := regexp.MatchString(datePattern4, date)
-
-	return matched1 || matched2 || matched3 || matched4
 }
