@@ -29,10 +29,15 @@ func (HIR *HumanInfoReader) GetFIO() []string {
 			data = append(data, text)
 		}
 	}
-	FIO = strings.Split(data[0], " ")
+	for _, text := range strings.Split(data[0], " ") {
+		if text != "" {
+			FIO = append(FIO, text)
+		}
+	}
 
 	if len(FIO) != 3 {
 		splitedNames := strings.Split(data[1], " ")
+		fmt.Printf("%#v\n", FIO)
 		FIO = append(FIO, splitedNames[0])
 		FIO = append(FIO, splitedNames[1])
 	}
