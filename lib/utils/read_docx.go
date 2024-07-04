@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"regexp"
 	"strings"
 
 	"github.com/fumiama/go-docx"
 )
 
 var textFormatter TextFormatter = TextFormatter{}
+
 type DocxReader struct {
 	Document *docx.Docx
 	File     multipart.File
@@ -65,20 +67,11 @@ func (DR *DocxReader) GetPlaceOfBirth() string {
 	return placeOfBirth
 }
 
-func (DR *DocxReader) GetBirthDate() string {
-	if DR.FullText == "" {
-		DR.GetFullDescription("<br>")
-	}
-
-	
-
-	return ""
-}
-
 func (DR *DocxReader) GetPlaceAndDateOfСonscription() string {
 	if DR.FullText == "" {
 		DR.GetFullDescription("<br>")
 	}
+
 	placeAndDateOfСonscription := textFormatter.extractDataFromText(DR.FullText, "Место и дата призыва", "<br>")
 
 	return placeAndDateOfСonscription
@@ -128,7 +121,6 @@ func (DR *DocxReader) GetImages() (map[string][]byte, error) {
 	images := make(map[string][]byte)
 
 	for _, zipFile := range zipReader.File {
-		fmt.Println(zipFile.Name)
 		if strings.Contains(zipFile.Name, "word/media") {
 			imageReader, err := zipFile.Open()
 			if err != nil {
@@ -150,4 +142,43 @@ func (DR *DocxReader) GetImages() (map[string][]byte, error) {
 	return images, nil
 }
 
+func (DR *DocxReader) GetBirthDate() []string {
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
 
+	for _, text := range strings.Split(DR.FullText, "<br>") {
+		if len(text) != 0 {
+			formattedText := strings.ReplaceAll(text, "(", "")
+			formattedText = strings.ReplaceAll(formattedText, ")", "")
+			formattedText = strings.ReplaceAll(formattedText, "-", "-")
+			formattedText = strings.ReplaceAll(formattedText, "–", "-")
+
+			dates := strings.Split(formattedText, "-")
+			if len(dates) == 2 {
+				dates[0] = strings.Trim(dates[0], " ")
+				dates[1] = strings.Trim(dates[1], " ")
+				if checkStringIsDate(dates[0]) || checkStringIsDate(dates[1]) {
+
+					return dates
+				}
+			}
+		}
+	}
+
+	return []string{}
+}
+
+func checkStringIsDate(date string) bool {
+	var datePattern1 = `^\d{1,2} (январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
+	var datePattern2 = `^(январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
+	var datePattern3 = `\d{4}$`
+	var datePattern4 = `^d{1,2}\d{1,2}.\d{4}$`
+
+	matched1, _ := regexp.MatchString(datePattern1, date)
+	matched2, _ := regexp.MatchString(datePattern2, date)
+	matched3, _ := regexp.MatchString(datePattern3, date)
+	matched4, _ := regexp.MatchString(datePattern4, date)
+
+	return matched1 || matched2 || matched3 || matched4
+}

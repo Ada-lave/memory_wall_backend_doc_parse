@@ -2,7 +2,7 @@ package utils
 
 import "strings"
 
-type TextFormatter struct {}
+type TextFormatter struct{}
 
 // TODO: Перенести функционал работы с текстом в отдельный класс
 func (TF *TextFormatter) formatText(text string) string {

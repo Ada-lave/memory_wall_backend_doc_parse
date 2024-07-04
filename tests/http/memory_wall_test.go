@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func SetupEngine() *gin.Engine {
 	server := gin.Default()
 	server.GET("/ping", func(c *gin.Context) {
@@ -31,5 +30,3 @@ func TestPingRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "pong", w.Body.String())
 }
-
-

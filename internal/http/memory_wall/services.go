@@ -2,8 +2,10 @@ package memorywall
 
 import (
 	"encoding/base64"
+	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
+	"strings"
 )
 
 type MemoryWallService struct {
@@ -29,7 +31,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 
 		images, err := docReader.GetImages()
-
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
@@ -39,14 +40,30 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			return []ParseDocxResponse{}, err
 		}
 
+		FIO := strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ")
+
 		var humanInfo HumanInfo = HumanInfo{
-			Name:                       utils.GetFileNameWithOutExt(file.Filename),
 			Description:                docReader.GetFullDescription("<br>"),
 			PlaceOfBirth:               docReader.GetPlaceOfBirth(),
 			DateAndPlaceOfСonscription: docReader.GetPlaceAndDateOfСonscription(),
 			MilitaryRank:               docReader.GetMilitaryRank(),
 			Awards:                     docReader.GetMedals(),
 			Images:                     preparedImages,
+		}
+
+		if len(FIO) == 3 {
+			humanInfo.FirstName = FIO[0]
+			humanInfo.LastName = FIO[1]
+			humanInfo.MiddleName = FIO[2]
+		} else {
+			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
+		}
+
+		birthDates := docReader.GetBirthDate()
+		fmt.Println(birthDates)
+		if len(birthDates) == 2 {
+			humanInfo.Birthday = birthDates[0]
+			humanInfo.Deathday = birthDates[1]
 		}
 
 		var resp ParseDocxResponse = ParseDocxResponse{
