@@ -4,7 +4,7 @@ import "strings"
 
 type TextFormatter struct{}
 
-// TODO: Перенести функционал работы с текстом в отдельный класс
+// Форматирует текст удаляя из него символ :
 func (TF *TextFormatter) formatText(text string) string {
 	text = strings.ReplaceAll(text, ":", "")
 	text = strings.TrimSpace(text)
@@ -12,7 +12,7 @@ func (TF *TextFormatter) formatText(text string) string {
 	return text
 }
 
-// TODO: Перенести функционал работы с текстом в отдельный класс
+
 func (TF *TextFormatter) extractDataFromText(text string, sub string, sep string) string {
 	if strings.Contains(text, sub) {
 		militaryRank := strings.Split(strings.Split(text, sub)[1], sep)[0]

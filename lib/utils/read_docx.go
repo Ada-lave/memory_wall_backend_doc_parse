@@ -31,6 +31,26 @@ func (DR DocxReader) NewDocxReader(file multipart.File, size int64) (DocxReader,
 	return DR, nil
 }
 
+func (DR *DocxReader) GetFIO() []string {
+	var FIO []string
+	if DR.FullText == "" {
+		DR.GetFullDescription("<br>")
+	}
+
+	var data []string 
+	for _, text := range strings.Split(DR.FullText, "<br>") {
+		if len(text) != 0 {
+			data = append(data, text)
+		}
+ 	}
+	FIO = strings.Split(data[0], " ")
+
+	if len(FIO) != 3 {
+		FIO = append(FIO, data[1])
+	}
+	return FIO 
+}
+
 func (DR *DocxReader) GetFullDescription(sep string) string {
 	var buf strings.Builder
 
@@ -172,7 +192,7 @@ func (DR *DocxReader) GetBirthDate() []string {
 func checkStringIsDate(date string) bool {
 	var datePattern1 = `^\d{1,2} (январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
 	var datePattern2 = `^(январ[ья]|феврал[ья]|март[а]|апрел[ья]|ма[йя]|июн[ья]|июл[ья]|август[а]|сентябр[ья]|октябр[ья]|ноябр[ья]|декабр[ья]) \d{4}$`
-	var datePattern3 = `\d{4}$`
+	var datePattern3 = `\d{4}`
 	var datePattern4 = `^d{1,2}\d{1,2}.\d{4}$`
 
 	matched1, _ := regexp.MatchString(datePattern1, date)

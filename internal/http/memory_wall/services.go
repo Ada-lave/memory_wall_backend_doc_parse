@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"memory_wall/lib/utils"
 	"mime/multipart"
-	"strings"
 )
 
 type MemoryWallService struct {
@@ -39,7 +38,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			return []ParseDocxResponse{}, err
 		}
 
-		FIO := strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ")
+		FIO := docReader.GetFIO()
 
 		var humanInfo HumanInfo = HumanInfo{
 			Description:                docReader.GetFullDescription("<br>"),
