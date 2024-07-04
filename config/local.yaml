@@ -1,0 +1,3 @@
+http_server:
+  address: "localhost:8081"
+  production: false
