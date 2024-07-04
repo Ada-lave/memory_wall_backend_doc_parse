@@ -3,8 +3,7 @@ package memorywall
 import (
 	"encoding/base64"
 	"memory_wall/internal/http/memory_wall/models"
-	human_utils "memory_wall/internal/utils"
-
+	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -25,7 +24,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 		defer openedFile.Close()
 
-		humanReader, err := human_utils.ReadFromDocx(openedFile, file.Size)
+		humanReader, err := readers.ReadFromDocx(openedFile, file.Size)
 		if err != nil {
 			return []models.ParseDocxResponse{}, err
 		}
