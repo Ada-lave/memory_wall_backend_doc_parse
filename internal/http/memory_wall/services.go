@@ -2,6 +2,7 @@ package memorywall
 
 import (
 	"encoding/base64"
+	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -22,8 +23,8 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 		defer openedFile.Close()
 
-		var docReader utils.DocxReader
-		docReader, err = docReader.NewDocxReader(openedFile, file.Size)
+		
+		docReader, err := utils.NewDocxReader(openedFile, file.Size)
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
@@ -39,7 +40,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 
 		FIO := docReader.GetFIO()
-
+		fmt.Printf("%#v\n",FIO)
 		var humanInfo HumanInfo = HumanInfo{
 			Description:                docReader.GetFullDescription("<br>"),
 			PlaceOfBirth:               docReader.GetPlaceOfBirth(),

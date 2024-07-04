@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"regexp"
 	"strings"
-
 	"github.com/fumiama/go-docx"
 )
 
@@ -20,15 +19,16 @@ type DocxReader struct {
 	FullText string
 }
 
-func (DR DocxReader) NewDocxReader(file multipart.File, size int64) (DocxReader, error) {
+func NewDocxReader(file multipart.File, size int64) (DocxReader, error) {
 	var err error
-	DR.Document, err = docx.Parse(file, size)
+	var dr DocxReader
+	dr.Document, err = docx.Parse(file, size)
 	if err != nil {
 		return DocxReader{}, err
 	}
-	DR.File = file
+	dr.File = file
 
-	return DR, nil
+	return dr, nil
 }
 
 func (DR *DocxReader) GetFIO() []string {
@@ -46,7 +46,9 @@ func (DR *DocxReader) GetFIO() []string {
 	FIO = strings.Split(data[0], " ")
 
 	if len(FIO) != 3 {
-		FIO = append(FIO, data[1])
+		splitedNames := strings.Split(data[1], " ")
+		FIO = append(FIO, splitedNames[0])
+		FIO = append(FIO, splitedNames[1])
 	}
 	return FIO 
 }

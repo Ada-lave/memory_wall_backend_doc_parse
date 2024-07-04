@@ -23,6 +23,7 @@ func main() {
 	if *config.HttpServer.Production {
 		gin.SetMode(gin.ReleaseMode)
 	}
+	
 	// init logger
 	logs.InitLogger()
 

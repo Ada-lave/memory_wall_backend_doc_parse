@@ -4,7 +4,7 @@ import "strings"
 
 type TextFormatter struct{}
 
-// Форматирует текст удаляя из него символ :
+// Форматирует текст удаляя из него символ ":"
 func (TF *TextFormatter) formatText(text string) string {
 	text = strings.ReplaceAll(text, ":", "")
 	text = strings.TrimSpace(text)
