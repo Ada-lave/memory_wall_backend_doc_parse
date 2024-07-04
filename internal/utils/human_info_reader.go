@@ -136,7 +136,6 @@ func (HIR *HumanInfoReader) GetImages() ([]map[string][]byte, error) {
 	image := make(map[string][]byte)
 
 	for _, zipFile := range zipReader.File {
-		fmt.Println(zipFile.Name)
 		if strings.Contains(zipFile.Name, "word/media") {
 			imageReader, err := zipFile.Open()
 			if err != nil {
