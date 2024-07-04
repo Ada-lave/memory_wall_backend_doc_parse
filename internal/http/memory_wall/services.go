@@ -2,7 +2,6 @@ package memorywall
 
 import (
 	"encoding/base64"
-	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
@@ -60,7 +59,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 
 		birthDates := docReader.GetBirthDate()
-		fmt.Println(birthDates)
 		if len(birthDates) == 2 {
 			humanInfo.Birthday = birthDates[0]
 			humanInfo.Deathday = birthDates[1]
