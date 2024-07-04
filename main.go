@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"memory_wall/internal/config"
 	memorywall "memory_wall/internal/http/memory_wall"
 	"memory_wall/logs"
 	"net/http"
-	"github.com/gin-gonic/gin"
 )
 
 func setupEngine() *gin.Engine {
@@ -23,7 +23,7 @@ func main() {
 	if *config.HttpServer.Production {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	
+
 	// init logger
 	logs.InitLogger()
 
@@ -35,5 +35,3 @@ func main() {
 		panic(err)
 	}
 }
-
-

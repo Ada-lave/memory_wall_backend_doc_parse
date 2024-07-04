@@ -1,9 +1,9 @@
 package config
 
 import (
-	"os"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
@@ -11,8 +11,8 @@ type Config struct {
 }
 
 type HttpServer struct {
-	Address string `yaml:"address" env-required:"true"`
-	Production *bool `yaml:"production" env-required:"true"`
+	Address    string `yaml:"address" env-required:"true"`
+	Production *bool  `yaml:"production" env-required:"true"`
 }
 
 func MustLoad() *Config {

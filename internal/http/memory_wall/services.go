@@ -3,6 +3,7 @@ package memorywall
 import (
 	"encoding/base64"
 	"fmt"
+	human_utils "memory_wall/internal/utils"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 )
@@ -23,13 +24,12 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 		}
 		defer openedFile.Close()
 
-		
-		docReader, err := utils.NewDocxReader(openedFile, file.Size)
+		humanReader, err := human_utils.ReadFromDocx(openedFile, file.Size)
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
 
-		images, err := docReader.GetImages()
+		images, err := humanReader.GetImages()
 		if err != nil {
 			return []ParseDocxResponse{}, err
 		}
@@ -39,14 +39,14 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			return []ParseDocxResponse{}, err
 		}
 
-		FIO := docReader.GetFIO()
-		fmt.Printf("%#v\n",FIO)
+		FIO := humanReader.GetFIO()
+		fmt.Printf("%#v\n", FIO)
 		var humanInfo HumanInfo = HumanInfo{
-			Description:                docReader.GetFullDescription("<br>"),
-			PlaceOfBirth:               docReader.GetPlaceOfBirth(),
-			DateAndPlaceOfСonscription: docReader.GetPlaceAndDateOfСonscription(),
-			MilitaryRank:               docReader.GetMilitaryRank(),
-			Awards:                     docReader.GetMedals(),
+			Description:                humanReader.GetFullDescription("<br>"),
+			PlaceOfBirth:               humanReader.GetPlaceOfBirth(),
+			DateAndPlaceOfСonscription: humanReader.GetPlaceAndDateOfСonscription(),
+			MilitaryRank:               humanReader.GetMilitaryRank(),
+			Awards:                     humanReader.GetMedals(),
 			Images:                     preparedImages,
 		}
 
@@ -58,7 +58,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]ParseDoc
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
 		}
 
-		birthDates := docReader.GetBirthDate()
+		birthDates := humanReader.GetBirthDate()
 		if len(birthDates) == 2 {
 			humanInfo.Birthday = birthDates[0]
 			humanInfo.Deathday = birthDates[1]
