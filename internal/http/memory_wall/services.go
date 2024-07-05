@@ -19,6 +19,7 @@ func newMemoryWallService() *MemoryWallService {
 func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.ParseDocxResponse, error) {
 	var response []models.ParseDocxResponse
 	for _, file := range files {
+		fmt.Println(file.Filename)
 		openedFile, err := file.Open()
 		if err != nil {
 			return []models.ParseDocxResponse{}, err
@@ -66,7 +67,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 
 		birthDates := humanReader.GetBirthDate()
-		fmt.Printf("%#v\n", birthDates)
 		if len(birthDates) == 2 {
 			humanInfo.Birthday = birthDates[0]
 			humanInfo.Deathday = birthDates[1]
