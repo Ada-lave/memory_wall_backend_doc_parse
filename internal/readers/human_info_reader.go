@@ -175,6 +175,7 @@ func (HIR *HumanInfoReader) GetBirthDate() []string {
 			formattedText = strings.ReplaceAll(formattedText, ")", "")
 			formattedText = strings.ReplaceAll(formattedText, "-", "-")
 			formattedText = strings.ReplaceAll(formattedText, "–", "-")
+			formattedText = strings.ReplaceAll(formattedText, "—", "-")
 
 			dates := strings.Split(formattedText, "-")
 			if len(dates) == 2 {
@@ -187,8 +188,6 @@ func (HIR *HumanInfoReader) GetBirthDate() []string {
 					}
 					if date2, err := HIR.dateTool.ParseDateFromString(dates[1]); err == nil {
 						dates[1] = date2
-					} else {
-						println(err)
 					}
 
 					return dates
