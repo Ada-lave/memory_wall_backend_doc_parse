@@ -24,20 +24,28 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 		defer openedFile.Close()
 
+		if file.Size < 1 {
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
+		}
 		humanReader, err := readers.ReadFromDocx(openedFile, file.Size)
 		if err != nil {
-			return []models.ParseDocxResponse{}, err
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
 		}
 
 		images, err := humanReader.GetImages()
 		if err != nil {
-			return []models.ParseDocxResponse{}, err
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
 		}
 
-		// preparedImages, err := MS.PrepareImagesToSend(images)
-		if err != nil {
-			return []models.ParseDocxResponse{}, err
-		}
 
 		FIO := humanReader.GetFIO()
 		var humanInfo models.HumanInfo = models.HumanInfo{

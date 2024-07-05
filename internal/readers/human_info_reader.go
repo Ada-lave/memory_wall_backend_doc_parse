@@ -23,6 +23,10 @@ func (HIR *HumanInfoReader) GetFIO() []string {
 	if HIR.FullText == "" {
 		HIR.GetFullDescription("<br>")
 	}
+	fmt.Println(HIR.FullText)
+	if HIR.FullText == "<br>" {
+		return []string{}
+	}
 
 	var data []string
 	for _, text := range strings.Split(HIR.FullText, "<br>") {
