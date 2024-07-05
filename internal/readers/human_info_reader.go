@@ -23,7 +23,6 @@ func (HIR *HumanInfoReader) GetFIO() []string {
 	if HIR.FullText == "" {
 		HIR.GetFullDescription("<br>")
 	}
-	fmt.Println(HIR.FullText)
 	if HIR.FullText == "<br>" {
 		return []string{}
 	}
@@ -40,7 +39,7 @@ func (HIR *HumanInfoReader) GetFIO() []string {
 		}
 	}
 
-	if len(FIO) != 3 {
+	if len(FIO) != 3 && len(data) > 2 {
 		splitedNames := strings.Split(data[1], " ")
 		FIO = append(FIO, splitedNames[0])
 		FIO = append(FIO, splitedNames[1])
