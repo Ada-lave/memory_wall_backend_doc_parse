@@ -2,6 +2,7 @@ package memorywall
 
 import (
 	"encoding/base64"
+	"fmt"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"

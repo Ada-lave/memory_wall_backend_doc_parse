@@ -2,7 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
+	"unicode"
 )
 
 var months1 = map[string]time.Month{
@@ -39,20 +42,126 @@ type DateParseTool struct {
 
 }
 
-func (DPT *DateParseTool) ParseDateFromString(date string) time.Time {
+func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 	stringTime, err := time.Parse("2006-01-02", date)
 
 	if err == nil {
-		return stringTime
+		return stringTime.UTC().String(), nil
 	}
 
-	fmt.Println(stringTime.UTC())
+	switch len(strings.Split(date, " ")) {
+	case 1:
+		year, err := DPT.CleanYear(date)
+		if err != nil {
+			
+			return "", err
+		}
 
-	return stringTime
+		return time.Date(year, 0, 0, 0, 0, 0, 0, time.Local).UTC().String(), nil
+	case 2:
+		stringTime, err = DPT.ParseMonthYearDate(date)
+
+		if err != nil {
+			return "", err
+		}
+
+		return stringTime.UTC().String(), nil
+	case 3:
+		stringTime, err = DPT.ParseDayMonthYearDate(date)
+
+		if err != nil {
+			return "", err
+		}
+
+		return stringTime.UTC().String(), nil
+	}
+
+	return stringTime.UTC().String(), nil
 }
 
-func (DPT *DateParseTool) ParseFullDate(date string) (time.Time, error) {
+func (DPT *DateParseTool) ParseDayMonthYearDate(date string) (time.Time, error) {
 
+	dates := strings.Split(date, " ")
 
-	return time.Time{}, nil
+	day, err := strconv.Atoi(dates[0])
+
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	var month time.Month
+	if m, exists := months1[dates[1]]; exists {
+		month = m
+	} else {
+		month = months2[dates[1]]
+	}
+
+	year, err := strconv.Atoi(dates[2])
+
+	if err != nil {
+		year, err = DPT.CleanYear(dates[2])
+
+		if err != nil {
+			return time.Time{}, err
+		}
+	}
+
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC), nil
+}
+
+func (DPT *DateParseTool) ParseMonthYearDate(date string) (time.Time, error) {
+	dates := strings.Split(date, " ")
+
+	var month time.Month
+	if m, exists := months1[dates[0]]; exists {
+		month = m
+	} else {
+		month = months2[dates[0]]
+	}
+
+	year, err := strconv.Atoi(dates[1])
+
+	if err != nil {
+		year, err = DPT.CleanYear(dates[1])
+
+		if err != nil {
+			return time.Time{}, err
+		}
+	}
+
+	return time.Date(year, month, 0, 0, 0, 0, 0, time.UTC), nil
+}
+
+func (DPT *DateParseTool) ParseYearDate(date string) (time.Time, error) {
+	dates := strings.Split(date, " ")
+
+	year, err := strconv.Atoi(dates[0])
+
+	if err != nil {
+		year, err = DPT.CleanYear(dates[0])
+
+		if err != nil {
+			return time.Time{}, err
+		}
+	}
+
+	return time.Date(year, 0, 0, 0, 0, 0, 0, time.UTC), nil
+}
+
+func (DPT *DateParseTool) CleanYear(date string) (int, error) {
+	var buf strings.Builder
+
+	for _, ch := range date {
+		if unicode.IsDigit(ch) {
+			buf.WriteString(string(ch))
+		}
+	}
+
+	year, err := strconv.Atoi(buf.String())
+
+	if err != nil {
+		return 0, err
+	}
+
+	return year, nil
 }

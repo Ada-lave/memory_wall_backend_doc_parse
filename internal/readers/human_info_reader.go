@@ -16,6 +16,7 @@ import (
 type HumanInfoReader struct {
 	utils.DocxReader
 	textFormatter utils.TextFormatter
+	dateTool utils.DateParseTool
 }
 
 func (HIR *HumanInfoReader) GetFIO() []string {
@@ -182,6 +183,15 @@ func (HIR *HumanInfoReader) GetBirthDate() []string {
 				dates[1] = strings.Trim(dates[1], " ")
 				if utils.CheckStringIsDate(dates[0]) || utils.CheckStringIsDate(dates[1]) {
 
+					if date1, err := HIR.dateTool.ParseDateFromString(dates[0]); err == nil {
+						dates[0] = date1
+					}
+					if date2, err := HIR.dateTool.ParseDateFromString(dates[1]); err == nil {
+						dates[1] = date2
+					} else {
+						println(err)
+					}
+					
 					return dates
 				}
 			}
@@ -200,6 +210,7 @@ func ReadFromDocx(file multipart.File, size int64) (HumanInfoReader, error) {
 	}
 	humanInfoReader.File = file
 	humanInfoReader.textFormatter = utils.TextFormatter{}
+	humanInfoReader.dateTool = utils.DateParseTool{}
 
 	return humanInfoReader, nil
 }
