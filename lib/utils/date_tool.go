@@ -55,7 +55,7 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 			return "", err
 		}
 
-		return time.Date(year, 0, 0, 0, 0, 0, 0, time.Local).UTC().String(), nil
+		return time.Date(year, 0, 0, 0, 0, 0, 0, time.UTC).UTC().String(), nil
 	case 2:
 		stringTime, err = DPT.ParseMonthYearDate(date)
 
