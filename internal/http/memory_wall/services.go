@@ -2,7 +2,6 @@ package memorywall
 
 import (
 	"encoding/base64"
-	"fmt"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
@@ -46,7 +45,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			})
 			continue
 		}
-
 
 		FIO := humanReader.GetFIO()
 		var humanInfo models.HumanInfo = models.HumanInfo{

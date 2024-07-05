@@ -56,7 +56,7 @@ func TestParseDocx(t *testing.T) {
 	}
 
 	_, err = formDataPart.Write(testFile)
-	
+
 	if err != nil {
 		panic(err)
 	}

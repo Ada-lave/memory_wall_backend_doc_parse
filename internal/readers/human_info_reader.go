@@ -4,19 +4,18 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
+	"github.com/fumiama/go-docx"
 	"io"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
-	"github.com/fumiama/go-docx"
 )
-
 
 type HumanInfoReader struct {
 	utils.DocxReader
 	textFormatter utils.TextFormatter
-	dateTool utils.DateParseTool
+	dateTool      utils.DateParseTool
 }
 
 func (HIR *HumanInfoReader) GetFIO() []string {
@@ -191,7 +190,7 @@ func (HIR *HumanInfoReader) GetBirthDate() []string {
 					} else {
 						println(err)
 					}
-					
+
 					return dates
 				}
 			}
