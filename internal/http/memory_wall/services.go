@@ -59,8 +59,8 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 
 		if len(FIO) == 3 {
-			humanInfo.FirstName = FIO[0]
-			humanInfo.LastName = FIO[1]
+			humanInfo.FirstName = FIO[1]
+			humanInfo.LastName = FIO[0]
 			humanInfo.MiddleName = FIO[2]
 		} else {
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
