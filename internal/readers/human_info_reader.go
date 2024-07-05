@@ -9,14 +9,13 @@ import (
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
-
 	"github.com/fumiama/go-docx"
 )
 
-var textFormatter utils.TextFormatter = utils.TextFormatter{}
 
 type HumanInfoReader struct {
 	utils.DocxReader
+	textFormatter utils.TextFormatter
 }
 
 func (HIR *HumanInfoReader) GetFIO() []string {
@@ -76,7 +75,7 @@ func (HIR *HumanInfoReader) GetPlaceOfBirth() string {
 	if HIR.FullText == "" {
 		HIR.GetFullDescription("<br>")
 	}
-	placeOfBirth := textFormatter.ExtractDataFromText(HIR.FullText, "Место рождения", "<br>")
+	placeOfBirth := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Место рождения", "<br>")
 
 	return placeOfBirth
 }
@@ -86,7 +85,7 @@ func (HIR *HumanInfoReader) GetPlaceAndDateOfСonscription() string {
 		HIR.GetFullDescription("<br>")
 	}
 
-	placeAndDateOfСonscription := textFormatter.ExtractDataFromText(HIR.FullText, "Место и дата призыва", "<br>")
+	placeAndDateOfСonscription := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Место и дата призыва", "<br>")
 
 	return placeAndDateOfСonscription
 }
@@ -96,10 +95,10 @@ func (HIR *HumanInfoReader) GetMilitaryRank() string {
 		HIR.GetFullDescription("<br>")
 	}
 
-	rank := textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание, должность", "<br>")
+	rank := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание, должность", "<br>")
 
 	if len(rank) == 0 {
-		rank = textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание", "<br>")
+		rank = HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание", "<br>")
 	}
 
 	return rank
@@ -197,6 +196,7 @@ func ReadFromDocx(file multipart.File, size int64) (HumanInfoReader, error) {
 		return HumanInfoReader{}, err
 	}
 	humanInfoReader.File = file
+	humanInfoReader.textFormatter = utils.TextFormatter{}
 
 	return humanInfoReader, nil
 }
