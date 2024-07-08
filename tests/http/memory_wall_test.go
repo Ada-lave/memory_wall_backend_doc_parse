@@ -57,9 +57,9 @@ func TestParseDocx(t *testing.T) {
 			Want: models.ParseDocxResponse{
 				Filename: "test.docx",
 				HumanInfo: models.HumanInfo{
-					FirstName:    "ВИКТОР",
-					LastName:     "ДУБРОВСКИХ",
-					MiddleName:   "ЕГОРОВИЧ",
+					FirstName:    "Виктор",
+					LastName:     "Дубровских",
+					MiddleName:   "Егорович",
 					Birthday:     "1922-06-12 00:00:00 +0000 UTC",
 					Deathday:     "1993-07-04 00:00:00 +0000 UTC",
 					MilitaryRank: "старший лейтенант; авиационный моторист, старший писарь по учету самолетов и моторов (после тяжелого ранения).",
