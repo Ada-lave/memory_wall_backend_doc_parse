@@ -3,6 +3,8 @@ package utils
 import (
 	"regexp"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type TextFormatter struct{}
@@ -23,6 +25,26 @@ func (TF *TextFormatter) ExtractDataFromText(text string, sub string, sep string
 		return formattedText
 	}
 	return ""
+}
+
+func (TF *TextFormatter) CapitalizeWords(text string) string {
+	text = strings.ToLower(text)
+	var buf strings.Builder
+	splittedText := strings.Split(text, " ")
+	for i, word := range splittedText {
+		r, size := utf8.DecodeRuneInString(word)
+		if r == utf8.RuneError {
+			buf.WriteString("err")
+		} else {
+			buf.WriteString(string(unicode.ToUpper(r))+ word[size:])
+		}
+
+		if i != len(splittedText) - 1 {
+			buf.WriteString(" ")
+		}
+	}
+
+	return buf.String()
 }
 
 func CheckStringIsDate(date string) bool {

@@ -1,7 +1,7 @@
 package readers
 
 import (
-	"fmt"
+	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
 )
@@ -10,40 +10,40 @@ type HumanFIOReader struct {
 	HumanInfoReader
 }
 
-func (HFR *HumanFIOReader) GetFIO() []string {
-	var FIO []string
-	if HFR.FullText == "" {
-		HFR.GetFullDescription("<br>")
-	}
-	if HFR.FullText == "<br>" {
-		return []string{}
-	}
+// func (HFR *HumanFIOReader) GetFIO() []string {
+// 	var FIO []string
+// 	if HFR.FullText == "" {
+// 		HFR.GetFullDescription("<br>")
+// 	}
+// 	if HFR.FullText == "<br>" {
+// 		return []string{}
+// 	}
 
-	var data []string
-	for _, text := range strings.Split(HFR.FullText, "<br>") {
-		if len(text) != 0 {
-			data = append(data, text)
-		}
-	}
-	for _, text := range strings.Split(data[0], " ") {
-		if text != "" {
-			FIO = append(FIO, text)
-		}
-	}
+// 	var data []string
+// 	for _, text := range strings.Split(HFR.FullText, "<br>") {
+// 		if len(text) != 0 {
+// 			data = append(data, text)
+// 		}
+// 	}
+// 	for _, text := range strings.Split(data[0], " ") {
+// 		if text != "" {
+// 			FIO = append(FIO, text)
+// 		}
+// 	}
 
-	if len(FIO) != 3 && len(data) > 2 {
-		splitedNames := strings.Split(data[1], " ")
-		if len(splitedNames) == 1 {
-			FIO = append(FIO, data[1])
-		} else {
-			FIO = append(FIO, splitedNames[0])
-			FIO = append(FIO, splitedNames[1])
-		}
-	}
+// 	if len(FIO) != 3 && len(data) > 2 {
+// 		splitedNames := strings.Split(data[1], " ")
+// 		if len(splitedNames) == 1 {
+// 			FIO = append(FIO, data[1])
+// 		} else {
+// 			FIO = append(FIO, splitedNames[0])
+// 			FIO = append(FIO, splitedNames[1])
+// 		}
+// 	}
 
-	fmt.Printf("%#v\n", FIO)
-	return FIO
-}
+// 	fmt.Printf("%#v\n", FIO)
+// 	return FIO
+// }
 
 func NewHumanFIOReader(file multipart.File, size int64) (HumanFIOReader, error) {
 	var humanInfoReader HumanInfoReader
@@ -56,4 +56,30 @@ func NewHumanFIOReader(file multipart.File, size int64) (HumanFIOReader, error) 
 	return HumanFIOReader{
 		HumanInfoReader: humanInfoReader,
 	}, nil
+}
+
+func (HFR *HumanFIOReader) GetFIO(text string) []string {
+	var splittedText []string
+
+	// Избавляемся от пустых слов
+	for _, word := range strings.Split(text, "<br>") {
+		if word != "" {
+			splittedText = append(splittedText, word)
+		}
+	}
+	fio := strings.Split(splittedText[0], " ")
+	switch len(fio){
+	case 3:
+		// Best case
+		capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
+		return strings.Split(capitalizedText, " ")
+	case 2:
+		if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[1]) {
+			fio = append(fio, splittedText[1])
+			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
+			return strings.Split(capitalizedText, " ")
+		}
+	}
+
+	return []string{}
 }

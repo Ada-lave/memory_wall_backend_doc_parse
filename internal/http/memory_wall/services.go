@@ -110,7 +110,7 @@ func (MS *MemoryWallService) ExtractFIO(file *multipart.File, size *int64) ([]st
 	if err != nil {
 		return []string{}, err
 	}
-	fio := humanFIOReader.GetFIO()
+	fio := humanFIOReader.GetFIO(" ")
 
 	return fio, nil
 }
