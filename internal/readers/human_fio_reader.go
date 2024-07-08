@@ -1,6 +1,7 @@
 package readers
 
 import (
+	"fmt"
 	"mime/multipart"
 	"strings"
 )
@@ -32,9 +33,15 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 
 	if len(FIO) != 3 && len(data) > 2 {
 		splitedNames := strings.Split(data[1], " ")
-		FIO = append(FIO, splitedNames[0])
-		FIO = append(FIO, splitedNames[1])
+		if len(splitedNames) == 1 {
+			FIO = append(FIO, data[1])
+		} else {
+			FIO = append(FIO, splitedNames[0])
+			FIO = append(FIO, splitedNames[1])
+		}
 	}
+
+	fmt.Printf("%#v\n", FIO)
 	return FIO
 }
 

@@ -70,14 +70,19 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			Images:                     images,
 		}
 
-		if len(FIO) == 3 {
+		switch len(FIO) {
+		case 1:
 			humanInfo.FirstName = FIO[1]
+		case 2:
 			humanInfo.LastName = FIO[0]
+			humanInfo.FirstName = FIO[1]
+		case 3:
 			humanInfo.MiddleName = FIO[2]
-		} else {
+			humanInfo.LastName = FIO[0]
+			humanInfo.FirstName = FIO[1]
+		default:
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
-		}
-
+		} 
 		birthDates, err := MS.ExtractBirthAndDeathDate(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
