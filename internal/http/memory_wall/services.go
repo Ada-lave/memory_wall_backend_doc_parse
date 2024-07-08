@@ -1,6 +1,7 @@
 package memorywall
 
 import (
+	"fmt"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
@@ -69,7 +70,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			Awards:                     humanReader.GetMedals(),
 			Images:                     images,
 		}
-
+		fmt.Printf("%#v\n", FIO)
 		switch len(FIO) {
 		case 1:
 			humanInfo.FirstName = FIO[1]

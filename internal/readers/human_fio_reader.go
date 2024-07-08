@@ -10,6 +10,7 @@ type HumanFIOReader struct {
 	HumanInfoReader
 }
 
+
 func NewHumanFIOReader(file multipart.File, size int64) (HumanFIOReader, error) {
 	var humanInfoReader HumanInfoReader
 
@@ -30,11 +31,12 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		HFR.GetFullDescription("<br>")
 	}
 	// Избавляемся от пустых слов
-	for _, word := range strings.Split(HFR.FullText, "<br>") {
+	for _, word := range strings.Split(HFR.FullText,"<br>") {
 		if word != "" {
 			splittedText = append(splittedText, word)
 		}
 	}
+
 	fio := strings.Split(splittedText[0], " ")
 	switch len(fio){
 	case 3:
@@ -58,6 +60,12 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 			fio = append(fio, splittedText[2])
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
+		} else if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]){
+			splittedText = strings.Split(splittedText[1], " ")
+			fio = append(fio, splittedText[0])
+			fio = append(fio, splittedText[1])
+			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
+			return strings.Split(capitalizedText, " ")	
 		}
 	}
 
