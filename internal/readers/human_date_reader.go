@@ -45,7 +45,6 @@ func (HDR *HumanDateReader) GetBirthAndDeathDate() []string {
 	return []string{}
 }
 
-
 func (HDR *HumanDateReader) GetPlaceAndDateOfСonscription() string {
 	if HDR.FullText == "" {
 		HDR.GetFullDescription("<br>")

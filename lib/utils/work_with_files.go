@@ -21,5 +21,3 @@ func WalkInDirAndFindAllFileNames(dirPath string) ([]string, error) {
 func GetFileNameWithOutExt(filename string) string {
 	return strings.TrimSuffix(filename, filepath.Ext(filename))
 }
-
-

@@ -37,8 +37,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			continue
 		}
 
-		
-
 		FIO, err := MS.ExtractFIO(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{

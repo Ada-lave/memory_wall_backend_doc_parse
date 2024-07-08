@@ -18,7 +18,6 @@ type HumanInfoReader struct {
 	dateTool      *utils.DateParseTool
 }
 
-
 func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
 	var buf strings.Builder
 
@@ -54,7 +53,6 @@ func (HIR *HumanInfoReader) GetPlaceOfBirth() string {
 
 	return placeOfBirth
 }
-
 
 func (HIR *HumanInfoReader) GetMilitaryRank() string {
 	if HIR.FullText == "" {
@@ -126,8 +124,6 @@ func (HIR *HumanInfoReader) GetImages() ([]models.HumanInfoImage, error) {
 
 	return images, nil
 }
-
-
 
 func NewHumanInfoReader(file multipart.File, size int64) (HumanInfoReader, error) {
 	var err error
