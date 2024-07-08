@@ -1,8 +1,6 @@
 package memorywall
 
 import (
-	"encoding/base64"
-	"fmt"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
@@ -19,7 +17,6 @@ func newMemoryWallService() *MemoryWallService {
 func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.ParseDocxResponse, error) {
 	var response []models.ParseDocxResponse
 	for _, file := range files {
-		fmt.Println(file.Filename)
 		openedFile, err := file.Open()
 		if err != nil {
 			return []models.ParseDocxResponse{}, err
@@ -32,7 +29,25 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			})
 			continue
 		}
-		humanReader, err := readers.ReadFromDocx(openedFile, file.Size)
+		humanReader, err := readers.NewHumanInfoReader(openedFile, file.Size)
+		if err != nil {
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
+		}
+
+		
+
+		FIO, err := MS.ExtractFIO(&openedFile, &file.Size)
+		if err != nil {
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
+		}
+
+		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
 				Filename: "err",
@@ -48,11 +63,10 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			continue
 		}
 
-		FIO := humanReader.GetFIO()
 		var humanInfo models.HumanInfo = models.HumanInfo{
 			Description:                humanReader.GetFullDescription("<br>"),
 			PlaceOfBirth:               humanReader.GetPlaceOfBirth(),
-			DateAndPlaceOfСonscription: humanReader.GetPlaceAndDateOfСonscription(),
+			DateAndPlaceOfСonscription: dateAndPlaceOfСonscription,
 			MilitaryRank:               humanReader.GetMilitaryRank(),
 			Awards:                     humanReader.GetMedals(),
 			Images:                     images,
@@ -66,7 +80,13 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
 		}
 
-		birthDates := humanReader.GetBirthDate()
+		birthDates, err := MS.ExtractBirthAndDeathDate(&openedFile, &file.Size)
+		if err != nil {
+			response = append(response, models.ParseDocxResponse{
+				Filename: "err",
+			})
+			continue
+		}
 		if len(birthDates) == 2 {
 			humanInfo.Birthday = birthDates[0]
 			humanInfo.Deathday = birthDates[1]
@@ -82,11 +102,42 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 	return response, nil
 }
 
-func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {
-	convertedImages := make(map[string]string)
-	for imgName, imgData := range images {
-		convertedImages[imgName] = base64.StdEncoding.EncodeToString(imgData)
+func (MS *MemoryWallService) ExtractFIO(file *multipart.File, size *int64) ([]string, error) {
+	humanFIOReader, err := readers.NewHumanFIOReader(*file, *size)
+	if err != nil {
+		return []string{}, err
 	}
+	fio := humanFIOReader.GetFIO()
 
-	return convertedImages, nil
+	return fio, nil
 }
+
+func (MS *MemoryWallService) ExtractBirthAndDeathDate(file *multipart.File, size *int64) ([]string, error) {
+	humanDateReader, err := readers.NewHumanDateReader(*file, *size)
+	if err != nil {
+		return []string{}, err
+	}
+	placeAndDateOfСonscription := humanDateReader.GetBirthAndDeathDate()
+
+	return placeAndDateOfСonscription, nil
+}
+
+func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.File, size *int64) (string, error) {
+	humanDateReader, err := readers.NewHumanDateReader(*file, *size)
+	if err != nil {
+		return "", err
+	}
+	placeAndDate := humanDateReader.GetPlaceAndDateOfСonscription()
+
+	return placeAndDate, nil
+}
+
+// TODO: Вынести это функционал
+// func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {
+// 	convertedImages := make(map[string]string)
+// 	for imgName, imgData := range images {
+// 		convertedImages[imgName] = base64.StdEncoding.EncodeToString(imgData)
+// 	}
+
+// 	return convertedImages, nil
+// }

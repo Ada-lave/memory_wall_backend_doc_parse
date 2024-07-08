@@ -120,9 +120,6 @@ func loadFile(data *map[string]io.Reader, file string) error {
 	}
 	(*data)[file] = f
 	
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

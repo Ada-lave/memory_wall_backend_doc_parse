@@ -14,38 +14,10 @@ import (
 
 type HumanInfoReader struct {
 	utils.DocxReader
-	textFormatter utils.TextFormatter
-	dateTool      utils.DateParseTool
+	textFormatter *utils.TextFormatter
+	dateTool      *utils.DateParseTool
 }
 
-func (HIR *HumanInfoReader) GetFIO() []string {
-	var FIO []string
-	if HIR.FullText == "" {
-		HIR.GetFullDescription("<br>")
-	}
-	if HIR.FullText == "<br>" {
-		return []string{}
-	}
-
-	var data []string
-	for _, text := range strings.Split(HIR.FullText, "<br>") {
-		if len(text) != 0 {
-			data = append(data, text)
-		}
-	}
-	for _, text := range strings.Split(data[0], " ") {
-		if text != "" {
-			FIO = append(FIO, text)
-		}
-	}
-
-	if len(FIO) != 3 && len(data) > 2 {
-		splitedNames := strings.Split(data[1], " ")
-		FIO = append(FIO, splitedNames[0])
-		FIO = append(FIO, splitedNames[1])
-	}
-	return FIO
-}
 
 func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
 	var buf strings.Builder
@@ -83,15 +55,6 @@ func (HIR *HumanInfoReader) GetPlaceOfBirth() string {
 	return placeOfBirth
 }
 
-func (HIR *HumanInfoReader) GetPlaceAndDateOfСonscription() string {
-	if HIR.FullText == "" {
-		HIR.GetFullDescription("<br>")
-	}
-
-	placeAndDateOfСonscription := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Место и дата призыва", "<br>")
-
-	return placeAndDateOfСonscription
-}
 
 func (HIR *HumanInfoReader) GetMilitaryRank() string {
 	if HIR.FullText == "" {
@@ -164,42 +127,9 @@ func (HIR *HumanInfoReader) GetImages() ([]models.HumanInfoImage, error) {
 	return images, nil
 }
 
-func (HIR *HumanInfoReader) GetBirthDate() []string {
-	if HIR.FullText == "" {
-		HIR.GetFullDescription("<br>")
-	}
 
-	for _, text := range strings.Split(HIR.FullText, "<br>") {
-		if len(text) != 0 {
-			formattedText := strings.ReplaceAll(text, "(", "")
-			formattedText = strings.ReplaceAll(formattedText, ")", "")
-			formattedText = strings.ReplaceAll(formattedText, "-", "-")
-			formattedText = strings.ReplaceAll(formattedText, "–", "-")
-			formattedText = strings.ReplaceAll(formattedText, "—", "-")
 
-			dates := strings.Split(formattedText, "-")
-			if len(dates) == 2 {
-				dates[0] = strings.Trim(dates[0], " ")
-				dates[1] = strings.Trim(dates[1], " ")
-				if utils.CheckStringIsDate(dates[0]) || utils.CheckStringIsDate(dates[1]) {
-
-					if date1, err := HIR.dateTool.ParseDateFromString(dates[0]); err == nil {
-						dates[0] = date1
-					}
-					if date2, err := HIR.dateTool.ParseDateFromString(dates[1]); err == nil {
-						dates[1] = date2
-					}
-
-					return dates
-				}
-			}
-		}
-	}
-
-	return []string{}
-}
-
-func ReadFromDocx(file multipart.File, size int64) (HumanInfoReader, error) {
+func NewHumanInfoReader(file multipart.File, size int64) (HumanInfoReader, error) {
 	var err error
 	var humanInfoReader HumanInfoReader
 	humanInfoReader.Document, err = docx.Parse(file, size)
@@ -207,8 +137,6 @@ func ReadFromDocx(file multipart.File, size int64) (HumanInfoReader, error) {
 		return HumanInfoReader{}, err
 	}
 	humanInfoReader.File = file
-	humanInfoReader.textFormatter = utils.TextFormatter{}
-	humanInfoReader.dateTool = utils.DateParseTool{}
 
 	return humanInfoReader, nil
 }
