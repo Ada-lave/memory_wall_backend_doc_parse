@@ -3,7 +3,7 @@ package models
 import "mime/multipart"
 
 type ParseDocxRequest struct {
-	Files *[]multipart.FileHeader `form:"files[]" binding:"required"`
+	Files *[]multipart.FileHeader `form:"files" binding:"required"`
 }
 
 type ParseDocxResponse struct {
