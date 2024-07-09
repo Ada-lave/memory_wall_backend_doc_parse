@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 	"os"
 )
 
@@ -15,7 +16,15 @@ type HttpServer struct {
 }
 
 func MustLoad() *Config {
-	var confPath string = "config/local.yaml"
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
+	var confPath string = os.Getenv("CONFIG_PATH")
+
+	if confPath == "" {
+		panic("ENV: Config path is empty")
+	}
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
 		panic(err)
