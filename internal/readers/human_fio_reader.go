@@ -71,7 +71,7 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		if len(splittedText) > 2 && 
 			!utils.CheckStringIsDate(splittedText[0]) && 
 			!utils.CheckStringIsDate(splittedText[1]) && 
-			(!utils.CheckStringIsDate(splittedText[2]) || strings.s) {
+			(!utils.CheckStringIsDate(splittedText[2])) {
 
 			fio = append(fio, splittedText[1])
 			fio = append(fio, splittedText[2])
