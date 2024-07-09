@@ -51,7 +51,7 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 	case 3:
 		// full text on one line
 		fio = TrimAllWords(fio)
-		fmt.Printf("FIO: %#v\n", fio)
+		
 		capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 		return strings.Split(capitalizedText, " ")
 	case 2:
@@ -59,12 +59,12 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[1]) {
 			fio = append(fio, splittedText[1])
 			fio = TrimAllWords(fio)
-		fmt.Printf("FIO: %#v\n", fio)
+		
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		} else {
 			fio = TrimAllWords(fio)
-		fmt.Printf("FIO: %#v\n", fio)
+		
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		}
@@ -74,7 +74,7 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 			fio = append(fio, splittedText[1])
 			fio = append(fio, splittedText[2])
 			fio = TrimAllWords(fio)
-		fmt.Printf("FIO: %#v\n", fio)
+		
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		} else if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]){
@@ -82,7 +82,7 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 			fio = append(fio, splittedText[0])
 			fio = append(fio, splittedText[1])
 			fio = TrimAllWords(fio)
-		fmt.Printf("FIO: %#v\n", fio)
+		
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")	
 		}
