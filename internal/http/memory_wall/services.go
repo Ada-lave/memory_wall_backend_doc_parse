@@ -1,12 +1,10 @@
 package memorywall
 
 import (
-	"io"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
 	"mime/multipart"
-	"os"
 )
 
 type MemoryWallService struct {
@@ -137,9 +135,9 @@ func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.
 	return placeAndDate, nil
 }
 
-func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
-	file, err := os.Create("storage/bad_files")
-}
+// func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
+// 	file, err := os.Create("storage/bad_files")
+// }
 
 // TODO: Вынести это функционал
 // func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {
