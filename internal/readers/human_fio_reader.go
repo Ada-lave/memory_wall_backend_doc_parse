@@ -1,6 +1,7 @@
 package readers
 
 import (
+	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
@@ -30,10 +31,10 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		HFR.GetFullDescription("<br>")
 	}
 
-	HFR.FullText = strings.ReplaceAll(HFR.FullText, " <br>", "<br>")
+	text  := strings.ReplaceAll(HFR.FullText, " <br>", "<br>")
 
 	// Избавляемся от пустых слов
-	for _, word := range strings.Split(HFR.FullText, "<br>") {
+	for _, word := range strings.Split(text, "<br>") {
 		if word != "" {
 			splittedText = append(splittedText, word)
 		}
@@ -67,21 +68,29 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		}
 	case 1:
 		// All on different line
-		if len(splittedText) > 2 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]) && !utils.CheckStringIsDate(splittedText[2]) {
+		if len(splittedText) > 2 && 
+			!utils.CheckStringIsDate(splittedText[0]) && 
+			!utils.CheckStringIsDate(splittedText[1]) && 
+			(!utils.CheckStringIsDate(splittedText[2]) || strings.s) {
+
 			fio = append(fio, splittedText[1])
 			fio = append(fio, splittedText[2])
 			fio = TrimAllWords(fio)
 
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
+			fmt.Printf("%#v\n", fio)
 			return strings.Split(capitalizedText, " ")
 		} else if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]) {
 			splittedText = strings.Split(splittedText[1], " ")
-			fio = append(fio, splittedText[0])
-			fio = append(fio, splittedText[1])
-			fio = TrimAllWords(fio)
 
-			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
-			return strings.Split(capitalizedText, " ")
+			if len(splittedText) > 1 {
+				fio = append(fio, splittedText[0])
+				fio = append(fio, splittedText[1])
+				fio = TrimAllWords(fio)
+
+				capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
+				return strings.Split(capitalizedText, " ")
+			}
 		}
 	}
 
