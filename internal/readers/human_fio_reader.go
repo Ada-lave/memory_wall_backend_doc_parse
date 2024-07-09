@@ -1,7 +1,6 @@
 package readers
 
 import (
-	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
