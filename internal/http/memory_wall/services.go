@@ -1,11 +1,12 @@
 package memorywall
 
 import (
-	"fmt"
+	"io"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
 	"mime/multipart"
+	"os"
 )
 
 type MemoryWallService struct {
@@ -70,7 +71,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			Awards:                     humanReader.GetMedals(),
 			Images:                     images,
 		}
-		fmt.Printf("%#v\n", FIO)
+
 		switch len(FIO) {
 		case 1:
 			humanInfo.FirstName = FIO[1]
@@ -134,6 +135,10 @@ func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.
 	placeAndDate := humanDateReader.GetPlaceAndDateOfСonscription()
 
 	return placeAndDate, nil
+}
+
+func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
+	file, err := os.Create("storage/bad_files")
 }
 
 // TODO: Вынести это функционал

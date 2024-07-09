@@ -37,6 +37,9 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		}
 	}
 
+	if len(splittedText) < 1 {
+		return []string{}
+	}
 	fio := strings.Split(splittedText[0], " ")
 	switch len(fio){
 	case 3:
