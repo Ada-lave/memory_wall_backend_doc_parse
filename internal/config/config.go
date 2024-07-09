@@ -20,11 +20,7 @@ func MustLoad() *Config {
 		panic(err)
 	}
 
-	var confPath string = os.Getenv("CONFIG_PATH")
-
-	if confPath == "" {
-		panic("ENV: Config path is empty")
-	}
+	var confPath string = "config/local.yaml"
 
 	if _, err := os.Stat(confPath); os.IsNotExist(err) {
 		panic(err)

@@ -27,7 +27,11 @@ func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
 			for _, pc := range it.(*docx.Paragraph).Children {
 				switch pc.(type) {
 				case *docx.Hyperlink:
-					buf.WriteString(fmt.Sprintf("%v", pc.(*docx.Hyperlink).Run.Children[0].(*docx.Text).Text))
+					if len(pc.(*docx.Hyperlink).Run.Children) > 1{
+						buf.WriteString(fmt.Sprintf("%v", pc.(*docx.Hyperlink).Run.Children[0].(*docx.Text).Text))
+					} else {
+						// fmt.Printf("%#v\n", pc.(*docx.Hyperlink).Run)
+					}
 				case *docx.Run:
 					for _, text := range pc.(*docx.Run).Children {
 						switch t := text.(type) {

@@ -1,6 +1,7 @@
 package readers
 
 import (
+	"fmt"
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"strings"
@@ -30,6 +31,9 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 	if HFR.FullText == "" {
 		HFR.GetFullDescription("<br>")
 	}
+
+	HFR.FullText = strings.ReplaceAll(HFR.FullText, " <br>", "<br>")
+	
 	// Избавляемся от пустых слов
 	for _, word := range strings.Split(HFR.FullText,"<br>") {
 		if word != "" {
@@ -41,18 +45,26 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		return []string{}
 	}
 	fio := strings.Split(splittedText[0], " ")
+	
+
 	switch len(fio){
 	case 3:
 		// full text on one line
+		fio = TrimAllWords(fio)
+		fmt.Printf("FIO: %#v\n", fio)
 		capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 		return strings.Split(capitalizedText, " ")
 	case 2:
 		// full text on different line
 		if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[1]) {
 			fio = append(fio, splittedText[1])
+			fio = TrimAllWords(fio)
+		fmt.Printf("FIO: %#v\n", fio)
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		} else {
+			fio = TrimAllWords(fio)
+		fmt.Printf("FIO: %#v\n", fio)
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		}
@@ -61,16 +73,34 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		if len(splittedText) > 2 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]) && !utils.CheckStringIsDate(splittedText[2]) {
 			fio = append(fio, splittedText[1])
 			fio = append(fio, splittedText[2])
+			fio = TrimAllWords(fio)
+		fmt.Printf("FIO: %#v\n", fio)
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")
 		} else if len(splittedText) > 1 && !utils.CheckStringIsDate(splittedText[0]) && !utils.CheckStringIsDate(splittedText[1]){
 			splittedText = strings.Split(splittedText[1], " ")
 			fio = append(fio, splittedText[0])
 			fio = append(fio, splittedText[1])
+			fio = TrimAllWords(fio)
+		fmt.Printf("FIO: %#v\n", fio)
 			capitalizedText := HFR.textFormatter.CapitalizeWords(strings.Join(fio, " "))
 			return strings.Split(capitalizedText, " ")	
 		}
 	}
 
 	return []string{}
+}
+
+func TrimWhitespaces(text string) string {
+	text = strings.Trim(text, " ")
+
+	return text
+}
+
+func TrimAllWords(text []string) []string {
+	for i, word := range text {
+		text[i] = TrimWhitespaces(word)
+	}
+
+	return text
 }
