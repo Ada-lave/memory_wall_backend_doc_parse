@@ -10,10 +10,11 @@ func initHumanFIOReader() *HumanFIOReader {
 	return &HumanFIOReader{
 		HumanInfoReader: HumanInfoReader{
 			textFormatter: &utils.TextFormatter{},
-			dateTool: &utils.DateParseTool{},
+			dateTool:      &utils.DateParseTool{},
 		},
 	}
 }
+
 // func Test_getFIO(t *testing.T) {
 // 	tests := []struct {
 // 		name string
@@ -33,10 +34,7 @@ func initHumanFIOReader() *HumanFIOReader {
 // 	}
 // }
 
-
-
 // TODO: Сделать рабочаю логику
-
 
 func TestHumanFIOReader_GetFIO(t *testing.T) {
 	tests := []struct {
@@ -48,37 +46,37 @@ func TestHumanFIOReader_GetFIO(t *testing.T) {
 		{
 			name: "Base full name in one line test case",
 			text: "АНУФРИЕВ АЛЕКСАНДР ПЕТРОВИЧ<br>",
-			HFR: initHumanFIOReader(),
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр", "Петрович"},
 		},
 		{
 			name: "Base test case with name on different line",
 			text: "АНУФРИЕВ АЛЕКСАНДР<br>ПЕТРОВИЧ<br>",
-			HFR: initHumanFIOReader(),
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр", "Петрович"},
 		},
 		{
 			name: "bad test",
 			text: "АНУФРИЕВ<br>АЛЕКСАНДР ПЕТРОВИЧ<br>",
-			HFR: initHumanFIOReader(),
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр", "Петрович"},
 		},
 		{
 			name: "bad test with whitespaces",
 			text: "АНУФРИЕВ <br>АЛЕКСАНДР ПЕТРОВИЧ<br>",
-			HFR: initHumanFIOReader(),
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр", "Петрович"},
 		},
 		{
 			name: "Base test case without middle name",
-			text:"АНУФРИЕВ АЛЕКСАНДР<br>",
-			HFR: initHumanFIOReader(),
+			text: "АНУФРИЕВ АЛЕКСАНДР<br>",
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр"},
 		},
 		{
 			name: "All on different line",
 			text: "АНУФРИЕВ<br>АЛЕКСАНДР<br>ПЕТРОВИЧ<br>",
-			HFR: initHumanFIOReader(),
+			HFR:  initHumanFIOReader(),
 			want: []string{"Ануфриев", "Александр", "Петрович"},
 		},
 	}

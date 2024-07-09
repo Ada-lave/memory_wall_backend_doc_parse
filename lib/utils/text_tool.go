@@ -36,10 +36,10 @@ func (TF *TextFormatter) CapitalizeWords(text string) string {
 		if r == utf8.RuneError {
 			buf.WriteString("err")
 		} else {
-			buf.WriteString(string(unicode.ToUpper(r))+ word[size:])
+			buf.WriteString(string(unicode.ToUpper(r)) + word[size:])
 		}
 
-		if i != len(splittedText) - 1 {
+		if i != len(splittedText)-1 {
 			buf.WriteString(" ")
 		}
 	}

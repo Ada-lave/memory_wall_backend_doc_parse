@@ -41,7 +41,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			continue
 		}
 
-		
 		FIO, err := MS.ExtractFIO(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
@@ -87,7 +86,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			humanInfo.FirstName = FIO[1]
 		default:
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
-		} 
+		}
 		birthDates, err := MS.ExtractBirthAndDeathDate(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
@@ -106,7 +105,6 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 		response = append(response, resp)
 
-	
 		if humanInfo.FirstName == "" && (len(humanInfo.Description) < 30 || humanInfo.Images == nil) {
 			fmt.Printf("%#v\n", humanInfo.FirstName)
 			MS.SaveBadFile(openedFile, file.Filename)
@@ -146,14 +144,14 @@ func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.
 }
 
 func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
-	newFile, err := os.Create("storage/bad_files/"+filename)
+	newFile, err := os.Create("storage/bad_files/" + filename)
 	if err != nil {
 		panic(err)
 
 	}
 
 	defer newFile.Close()
-	
+
 	_, err = io.Copy(newFile, file)
 	if err != nil {
 		panic(err)
