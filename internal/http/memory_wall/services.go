@@ -1,10 +1,12 @@
 package memorywall
 
 import (
+	"io"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
 	"memory_wall/lib/utils"
 	"mime/multipart"
+	"os"
 )
 
 type MemoryWallService struct {
@@ -21,7 +23,8 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		if err != nil {
 			return []models.ParseDocxResponse{}, err
 		}
-		defer openedFile.Close()
+
+		// MS.SaveBadFile(openedFile, file.Filename)
 
 		if file.Size < 1 {
 			response = append(response, models.ParseDocxResponse{
@@ -37,6 +40,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			continue
 		}
 
+		
 		FIO, err := MS.ExtractFIO(&openedFile, &file.Size)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
@@ -100,8 +104,12 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			HumanInfo: humanInfo,
 		}
 		response = append(response, resp)
-	}
 
+	
+		// if humanInfo.FirstName == "" && (len(humanInfo.Description) < 30 ||humanInfo.Images == nil) {
+			MS.SaveBadFile(openedFile, file.Filename)
+		// }
+	}
 	return response, nil
 }
 
@@ -135,9 +143,20 @@ func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.
 	return placeAndDate, nil
 }
 
-// func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
-// 	file, err := os.Create("storage/bad_files")
-// }
+func (MS *MemoryWallService) SaveBadFile(file multipart.File, filename string) {
+	newFile, err := os.Create("storage/bad_files/"+filename)
+	if err != nil {
+		panic(err)
+
+	}
+
+	defer newFile.Close()
+	
+	_, err = io.Copy(newFile, file)
+	if err != nil {
+		panic(err)
+	}
+}
 
 // TODO: Вынести это функционал
 // func (MS *MemoryWallService) PrepareImagesToSend(images map[string][]byte) (map[string]string, error) {

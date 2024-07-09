@@ -47,6 +47,11 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 		return stringTime.UTC().String(), nil
 	}
 
+	stringTime, err = time.Parse("02.01.2006", date)
+	if err == nil {
+		return stringTime.UTC().String(), nil
+	}
+
 	switch len(strings.Split(date, " ")) {
 	case 1:
 		year, err := DPT.CleanYear(date)
