@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -52,6 +53,7 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 		return stringTime.UTC().String(), nil
 	}
 
+	// fmt.Println(len(strings.Split(date, " ")))
 	switch len(strings.Split(date, " ")) {
 	case 1:
 		year, err := DPT.CleanYear(date)
@@ -77,6 +79,21 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 		}
 
 		return stringTime.UTC().String(), nil
+	
+	case 4:
+		
+		fmt.Println(string(date[len(date)-1]))
+		if string(date[len(date)-1]) == "³" {
+			date = strings.TrimSuffix(date, "³")
+			stringTime, err = DPT.ParseDayMonthYearDate(date)
+
+			if err != nil {
+				return "", err
+			}
+
+			return stringTime.UTC().String(), nil
+		}
+		
 	}
 
 	return stringTime.UTC().String(), nil
