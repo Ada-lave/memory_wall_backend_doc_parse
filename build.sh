@@ -1,1 +1,1 @@
-sudo go build
+go build
