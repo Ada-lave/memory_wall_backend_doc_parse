@@ -8,6 +8,7 @@ import (
 	"memory_wall/lib/utils"
 	"mime/multipart"
 	"os"
+	"strings"
 )
 
 type MemoryWallService struct {
@@ -41,13 +42,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			continue
 		}
 
-		FIO, err := MS.ExtractFIO(&openedFile, &file.Size)
-		if err != nil {
-			response = append(response, models.ParseDocxResponse{
-				Filename: "err",
-			})
-			continue
-		}
+		FIO :=  strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ") 
 
 		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(&openedFile, &file.Size)
 		if err != nil {
