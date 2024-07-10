@@ -1,7 +1,6 @@
 package memorywall
 
 import (
-	"fmt"
 	"io"
 	"memory_wall/internal/http/memory_wall/models"
 	"memory_wall/internal/readers"
@@ -95,15 +94,10 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 
 		var resp models.ParseDocxResponse = models.ParseDocxResponse{
-			Filename:  file.Filename,
+			Filename:  utils.GetFileNameWithOutExt(file.Filename),
 			HumanInfo: humanInfo,
 		}
 		response = append(response, resp)
-
-		if humanInfo.FirstName == "" && (len(humanInfo.Description) < 30 || humanInfo.Images == nil) {
-			fmt.Printf("%#v\n", humanInfo.FirstName)
-			MS.SaveBadFile(openedFile, file.Filename)
-		}
 	}
 	return response, nil
 }
