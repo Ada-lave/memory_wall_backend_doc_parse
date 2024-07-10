@@ -93,10 +93,21 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 
 			return stringTime.UTC().String(), nil
 		}
+
+		if string(date[len(date)-1]) == "." {
+			date = strings.TrimSuffix(date, "³.")
+			stringTime, err = DPT.ParseDayMonthYearDate(date)
+
+			if err != nil {
+				return "", err
+			}
+
+			return stringTime.UTC().String(), nil
+		}
 		
 	}
 
-	return stringTime.UTC().String(), nil
+	return "нет данных", nil
 }
 
 func (DPT *DateParseTool) ParseDayMonthYearDate(date string) (time.Time, error) {

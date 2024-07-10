@@ -41,7 +41,7 @@ func TestDateParseTool_ParseDateFromString(t *testing.T) {
 		},
 		{
 			name: "Test with moth like text and char on the end and dot case 2",
-			date: "25 июль 2024г.",
+			date: "25 июль 2024 г.",
 			want: time.Date(2024, 07, 25, 00, 00, 00, 00, time.UTC).String(),
 		},
 		{
