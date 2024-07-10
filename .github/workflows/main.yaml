@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-    deployment:
+    testing-stage:
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -23,3 +23,22 @@ jobs:
 
             - name: Go testing
               run: go test ./... 
+    
+    build:
+        needs: testing-stage
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: appleboy/ssh-action@v1.0.3
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                username: ${{ secrets.SSH_NAME }}
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+                script: |
+                    cd ${{ secrets.PROJECT_DIR }};
+                    git checkout main;
+                    git -c credential.helper='!f() { echo "username=${{secrets.GIT_NAME}}"; echo "password=${{secrets.GIT_TOKEN}}"; }; f' pull
+                    go build
+                    sudo service goweb restart
+                    sudo service nginx restart
