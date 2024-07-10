@@ -107,7 +107,7 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 		
 	}
 
-	return "нет данных", nil
+	return stringTime.UTC().String(), nil
 }
 
 func (DPT *DateParseTool) ParseDayMonthYearDate(date string) (time.Time, error) {
