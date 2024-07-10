@@ -1,1 +1,1 @@
-./usr/local/go/bin/go build
+sudo go build
