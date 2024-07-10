@@ -71,7 +71,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 
 		switch len(FIO) {
 		case 1:
-			humanInfo.FirstName = FIO[1]
+			humanInfo.FirstName = FIO[0]
 		case 2:
 			humanInfo.LastName = FIO[0]
 			humanInfo.FirstName = FIO[1]
