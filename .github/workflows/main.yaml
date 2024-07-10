@@ -39,6 +39,7 @@ jobs:
                     cd ${{ secrets.PROJECT_DIR }};
                     git checkout main;
                     git -c credential.helper='!f() { echo "username=${{secrets.GIT_NAME}}"; echo "password=${{secrets.GIT_TOKEN}}"; }; f' pull
+                    go version
                     go build
                     sudo service goweb restart
                     sudo service nginx restart
