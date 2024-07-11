@@ -18,6 +18,7 @@
 
 # Документация API
 ### Пути парсинга данных
+
 <details>
 <summary><code>POST</code> <code><b>/api/parse/docx</b></code> <code>(Возвращает содержимое файла в формате json)</code></summary>
 
@@ -27,7 +28,7 @@
 >|files |required| array     |N/A        |
 
 #### Ответ
->|Code| Content-Type   | response            |
+>|Code| Content-Type   | Response            |
 >|----|----------------|---------------------|
 >|200 |application/json|```json```           |
 >|400 |application/json|```parameter error```|
@@ -67,5 +68,15 @@
     "validation error": "Key: 'ParseDocxRequest.Files' Error:Field validation for 'Files' failed on the 'required' tag"
 }
 ```
+</details>
+
+### Путь проверки работы сервиса
+<details>
+<summary><code>GET</code> <code>/ping</code> <code>Проверка работы сервиса</code></summary>
+
+#### Ответ
+>|Code | Content-Type | Response |
+>|-----|--------------|----------|
+>|200  |text          |pong      |
 </details>
 
