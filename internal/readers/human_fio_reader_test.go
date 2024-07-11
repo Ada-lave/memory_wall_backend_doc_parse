@@ -8,11 +8,9 @@ import (
 
 func initHumanFIOReader() *HumanFIOReader {
 	return &HumanFIOReader{
-		HumanInfoReader: HumanInfoReader{
 			textFormatter: &utils.TextFormatter{},
-			dateTool:      &utils.DateParseTool{},
-		},
-	}
+			text: "",
+		}
 }
 
 // func Test_getFIO(t *testing.T) {
