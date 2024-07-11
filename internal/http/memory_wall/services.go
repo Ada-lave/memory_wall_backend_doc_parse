@@ -102,8 +102,8 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 	return response, nil
 }
 
-func (MS *MemoryWallService) ExtractFIO(file *multipart.File, size *int64) ([]string, error) {
-	humanFIOReader, err := readers.NewHumanFIOReader(*file, *size)
+func (MS *MemoryWallService) ExtractFIO(text string) ([]string, error) {
+	humanFIOReader, err := readers.NewHumanFIOReader(text)
 	if err != nil {
 		return []string{}, err
 	}

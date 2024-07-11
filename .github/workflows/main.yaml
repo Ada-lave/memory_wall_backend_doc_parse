@@ -38,7 +38,7 @@ jobs:
                 script: |
                     cd ${{ secrets.PROJECT_DIR }};
                     git checkout main;
-                    git -c credential.helper='!f() { echo "username=${{secrets.GIT_NAME}}"; echo "password=${{secrets.GIT_TOKEN}}"; }; f' pull;
+                    git fetch;
                     export PATH=$PATH:/usr/local/go/bin;
                     ./build.sh;
                     sudo service goweb restart;

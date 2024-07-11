@@ -3,35 +3,24 @@ package readers
 import (
 	"fmt"
 	"memory_wall/lib/utils"
-	"mime/multipart"
 	"strings"
 )
 
 type HumanFIOReader struct {
-	HumanInfoReader
+	text string
+	textFormatter *utils.TextFormatter
 }
 
-func NewHumanFIOReader(file multipart.File, size int64) (HumanFIOReader, error) {
-	var humanInfoReader HumanInfoReader
-
-	humanInfoReader, err := NewHumanInfoReader(file, size)
-	if err != nil {
-		return HumanFIOReader{}, err
-	}
-
+func NewHumanFIOReader(text string) (HumanFIOReader, error) {
 	return HumanFIOReader{
-		HumanInfoReader: humanInfoReader,
+		text: text,
 	}, nil
 }
 
 func (HFR *HumanFIOReader) GetFIO() []string {
 	var splittedText []string
 
-	if HFR.FullText == "" {
-		HFR.GetFullDescription("<br>")
-	}
-
-	text  := strings.ReplaceAll(HFR.FullText, " <br>", "<br>")
+	text  := strings.ReplaceAll(HFR.text, " <br>", "<br>")
 
 	// Избавляемся от пустых слов
 	for _, word := range strings.Split(text, "<br>") {
