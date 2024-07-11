@@ -36,20 +36,20 @@
 {
     "data":[
         {
-            "filename": string,
+            "filename": "string",
             "human_info": {
-                "name": string,
-                 "first_name": string,
-                "last_name": string,
-                "middle_name": string,
-                "description": string,
-                "birthday": date|string,
-                "deathday": date|string,
-                "place_of_birth": string,
-                "date_and_place_of_conscription": string,
-                "military_rank_and_position": string,
-                "awards": []string,
-                "images": []byte
+                "name": "string",
+                 "first_name": "string",
+                "last_name": "string",
+                "middle_name": "string",
+                "description": "string",
+                "birthday": "date|string",
+                "deathday": "date|string",
+                "place_of_birth": "string",
+                "date_and_place_of_conscription": "string",
+                "military_rank_and_position": "string",
+                "awards": "[]string",
+                "images": "[]byte"
             }
         }
     ]
