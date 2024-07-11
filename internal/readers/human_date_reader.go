@@ -2,20 +2,17 @@ package readers
 
 import (
 	"memory_wall/lib/utils"
-	"mime/multipart"
 	"strings"
 )
 
 type HumanDateReader struct {
-	HumanInfoReader
+	text string
+	dateTool utils.DateParseTool
+	textFormatter utils.TextFormatter
 }
 
 func (HDR *HumanDateReader) GetBirthAndDeathDate() []string {
-	if HDR.FullText == "" {
-		HDR.GetFullDescription("<br>")
-	}
-
-	for _, text := range strings.Split(HDR.FullText, "<br>") {
+	for _, text := range strings.Split(HDR.text, "<br>") {
 		if len(text) != 0 {
 			formattedText := strings.ReplaceAll(text, "(", "")
 			formattedText = strings.ReplaceAll(formattedText, ")", "")
@@ -46,24 +43,16 @@ func (HDR *HumanDateReader) GetBirthAndDeathDate() []string {
 }
 
 func (HDR *HumanDateReader) GetPlaceAndDateOfСonscription() string {
-	if HDR.FullText == "" {
-		HDR.GetFullDescription("<br>")
-	}
 
-	placeAndDateOfСonscription := HDR.textFormatter.ExtractDataFromText(HDR.FullText, "Место и дата призыва", "<br>")
+	placeAndDateOfСonscription := HDR.textFormatter.ExtractDataFromText(HDR.text, "Место и дата призыва", "<br>")
 
 	return placeAndDateOfСonscription
 }
 
-func NewHumanDateReader(file multipart.File, size int64) (HumanDateReader, error) {
-	var humanInfoReader HumanInfoReader
+func NewHumanDateReader(text string) (HumanDateReader, error) {
 
-	humanInfoReader, err := NewHumanInfoReader(file, size)
-	if err != nil {
-		return HumanDateReader{}, err
-	}
 
 	return HumanDateReader{
-		HumanInfoReader: humanInfoReader,
+		text: text,
 	}, nil
 }

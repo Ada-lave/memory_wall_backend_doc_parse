@@ -43,7 +43,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 
 		FIO :=  strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ") 
 
-		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(&openedFile, &file.Size)
+		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(humanReader.FullText)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
 				Filename: "err",
@@ -81,7 +81,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		default:
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
 		}
-		birthDates, err := MS.ExtractBirthAndDeathDate(&openedFile, &file.Size)
+		birthDates, err := MS.ExtractBirthAndDeathDate(humanReader.FullText)
 		if err != nil {
 			response = append(response, models.ParseDocxResponse{
 				Filename: "err",
@@ -112,8 +112,8 @@ func (MS *MemoryWallService) ExtractFIO(text string) ([]string, error) {
 	return fio, nil
 }
 
-func (MS *MemoryWallService) ExtractBirthAndDeathDate(file *multipart.File, size *int64) ([]string, error) {
-	humanDateReader, err := readers.NewHumanDateReader(*file, *size)
+func (MS *MemoryWallService) ExtractBirthAndDeathDate(text string) ([]string, error) {
+	humanDateReader, err := readers.NewHumanDateReader(text)
 	if err != nil {
 		return []string{}, err
 	}
@@ -122,8 +122,8 @@ func (MS *MemoryWallService) ExtractBirthAndDeathDate(file *multipart.File, size
 	return placeAndDateOfСonscription, nil
 }
 
-func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(file *multipart.File, size *int64) (string, error) {
-	humanDateReader, err := readers.NewHumanDateReader(*file, *size)
+func (MS *MemoryWallService) ExtractPlaceAndDateOfСonscription(text string) (string, error) {
+	humanDateReader, err := readers.NewHumanDateReader(text)
 	if err != nil {
 		return "", err
 	}
