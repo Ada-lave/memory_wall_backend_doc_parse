@@ -29,7 +29,10 @@ func main() {
 
 	// init server
 	server := setupEngine()
-	memorywall.InitMemoryWallRouter(server)
+	api := server.Group("/api")
+	{
+		memorywall.InitMemoryWallRouter(api)
+	}
 
 	if err := server.Run(config.Address); err != nil {
 		panic(err)
