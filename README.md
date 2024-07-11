@@ -27,11 +27,16 @@
 >|files |required| array     |N/A        |
 
 #### Ответ
->|Code| Content-Type   | response |
->|----|----------------|----------|
->|200 |application/json|```json```|
+>|Code| Content-Type   | response            |
+>|----|----------------|---------------------|
+>|200 |application/json|```json```           |
+>|400 |application/json|```parameter error```|
+>|500 |text            |```server error```   |
 
-##### Структура ответа JSON
+##### Структуры ответов JSON
+
+
+> Code 200
 ```json
 {
     "data":[
@@ -53,6 +58,13 @@
             }
         }
     ]
+}
+```
+
+>Code 400
+```json
+{
+    "validation error": "Key: 'ParseDocxRequest.Files' Error:Field validation for 'Files' failed on the 'required' tag"
 }
 ```
 </details>
