@@ -38,7 +38,7 @@ jobs:
                 script: |
                     cd ${{ secrets.PROJECT_DIR }};
                     git checkout main;
-                    git fetch;
+                    git pull -ff-only;
                     export PATH=$PATH:/usr/local/go/bin;
                     sudo chmod 775 build.sh;
                     ./build.sh;
