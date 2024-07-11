@@ -38,7 +38,7 @@ jobs:
                 script: |
                     cd ${{ secrets.PROJECT_DIR }};
                     git checkout main;
-                    git pull -ff-only;
+                    git pull --ff-only;
                     export PATH=$PATH:/usr/local/go/bin;
                     go build;
                     sudo service goweb restart;
