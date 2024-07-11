@@ -40,6 +40,7 @@ jobs:
                     git checkout main;
                     git fetch;
                     export PATH=$PATH:/usr/local/go/bin;
+                    sudo chmod 775 build.sh;
                     ./build.sh;
                     sudo service goweb restart;
                     sudo service nginx restart;
