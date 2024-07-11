@@ -24,7 +24,8 @@ type serverResponse struct {
 
 func SetupEngine() *gin.Engine {
 	server := gin.Default()
-	memorywall.InitMemoryWallRouter(server)
+	api := server.Group("/api")
+	memorywall.InitMemoryWallRouter(api)
 	server.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
@@ -83,7 +84,7 @@ func TestParseDocx(t *testing.T) {
 			loadFilesToBody(writer, filesData)
 
 			responseRecorder := httptest.NewRecorder()
-			req, _ := http.NewRequest("POST", "/parse/docx", &body)
+			req, _ := http.NewRequest("POST", "/api/parse/docx", &body)
 
 			req.Header.Set("Content-Type", writer.FormDataContentType())
 
