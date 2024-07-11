@@ -23,16 +23,16 @@
 <summary><code>POST</code> <code><b>/api/parse/docx</b></code> <code>(Возвращает содержимое файла в формате json)</code></summary>
 
 #### Параметры
->| Name | Type   | Data type |Description|
->|------|--------| ----------|-----------|
->|files |required| array     |N/A        |
+| Name | Type   | Data type |Description|
+|------|--------| ----------|-----------|
+|files |required| array     |N/A        |
 
 #### Ответ
->|Code| Content-Type   | Response            |
->|----|----------------|---------------------|
->|200 |application/json|```json```           |
->|400 |application/json|```parameter error```|
->|500 |text            |```server error```   |
+|Code| Content-Type   | Response            |
+|----|----------------|---------------------|
+|200 |application/json|```json```           |
+|400 |application/json|```parameter error```|
+|500 |text            |```server error```   |
 
 ##### Структуры ответов JSON
 
@@ -75,8 +75,8 @@
 <summary><code>GET</code> <code>/ping</code> <code>Проверка работы сервиса</code></summary>
 
 #### Ответ
->|Code | Content-Type | Response |
->|-----|--------------|----------|
->|200  |text          |pong      |
+|Code | Content-Type | Response |
+|-----|--------------|----------|
+|200  |text          |pong      |
 </details>
 
