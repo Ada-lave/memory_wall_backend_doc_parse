@@ -18,45 +18,59 @@ func newMemoryWallService() *MemoryWallService {
 }
 
 func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.ParseDocxResponse, error) {
-	var response []models.ParseDocxResponse
+	responseCh := make(chan models.ParseResult)
 	for _, file := range files {
-		openedFile, err := file.Open()
+		go MS.readDocxFiles(file, responseCh)
+	}
+
+	response := make([]models.ParseDocxResponse, len(files))
+	for i := range response {
+		res := <-responseCh
+
+		if res.Err != nil {
+			return response, res.Err
+		}
+		response[i] = res.Result
+	}
+	return response, nil
+}
+
+func (MS *MemoryWallService) readDocxFiles(file multipart.FileHeader, ch chan <- models.ParseResult) {
+	openedFile, err := file.Open()
 		if err != nil {
-			return []models.ParseDocxResponse{}, err
+			ch <- models.ParseResult{Result: models.ParseDocxResponse{}, Err: err}
 		}
 
 		// MS.SaveBadFile(openedFile, file.Filename)
 
 		if file.Size < 1 {
-			response = append(response, models.ParseDocxResponse{
+			ch <-  models.ParseResult{Result: models.ParseDocxResponse{
 				Filename: "err",
-			})
-			continue
+			}}
+			
 		}
+
 		humanReader, err := readers.NewHumanInfoReader(openedFile, file.Size)
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
+			ch <-  models.ParseResult{Result: models.ParseDocxResponse{
 				Filename: "err",
-			})
-			continue
+			}}
 		}
 
 		FIO :=  strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ") 
 
 		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(humanReader.FullText)
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
+			ch <-  models.ParseResult{Result: models.ParseDocxResponse{
 				Filename: "err",
-			})
-			continue
+			}}
 		}
 
 		images, err := humanReader.GetImages()
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
+			ch <-  models.ParseResult{Result: models.ParseDocxResponse{
 				Filename: "err",
-			})
-			continue
+			}}
 		}
 
 		var humanInfo models.HumanInfo = models.HumanInfo{
@@ -83,10 +97,9 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 		}
 		birthDates, err := MS.ExtractBirthAndDeathDate(humanReader.FullText)
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
+			ch <-  models.ParseResult{Result: models.ParseDocxResponse{
 				Filename: "err",
-			})
-			continue
+			}}
 		}
 		if len(birthDates) == 2 {
 			humanInfo.Birthday = birthDates[0]
@@ -97,9 +110,7 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			Filename:  utils.GetFileNameWithOutExt(file.Filename),
 			HumanInfo: humanInfo,
 		}
-		response = append(response, resp)
-	}
-	return response, nil
+		ch <- models.ParseResult{Result: resp, Err: nil}
 }
 
 func (MS *MemoryWallService) ExtractFIO(text string) ([]string, error) {

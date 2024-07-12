@@ -30,3 +30,8 @@ type HumanInfoImage struct {
 	Name string `json:"name"`
 	Data []byte `json:"data"`
 }
+
+type ParseResult struct {
+	Err error
+	Result ParseDocxResponse
+}
