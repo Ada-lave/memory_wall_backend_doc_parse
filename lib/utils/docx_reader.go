@@ -8,7 +8,7 @@ import (
 type DocxReader struct {
 	Document *docx.Docx
 	File     multipart.File
-	FullText string
+	
 }
 
 func NewDocxReader(file multipart.File, size int64) (DocxReader, error) {

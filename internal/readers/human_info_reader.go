@@ -15,7 +15,7 @@ import (
 type HumanInfoReader struct {
 	utils.DocxReader
 	textFormatter *utils.TextFormatter
-	dateTool      *utils.DateParseTool
+	FullText string
 }
 
 func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
