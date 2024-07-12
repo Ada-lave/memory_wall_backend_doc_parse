@@ -22,6 +22,16 @@ func TestGetFileNameWithOutExt(t *testing.T) {
 			Filename: "Alex Batman Superman",
 			Want: "Alex Batman Superman",
 		},
+		{
+			Name: "Test with double ext",
+			Filename: "Alex Batman Superman.test.docx",
+			Want: "Alex Batman Superman.test",
+		},
+		{
+			Name: "Test with number file name",
+			Filename: "190495$$$@221.docx",
+			Want: "190495$$$@221",
+		},
 	}
 
 	for _, tc := range testCases {

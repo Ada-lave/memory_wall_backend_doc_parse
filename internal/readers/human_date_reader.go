@@ -44,7 +44,7 @@ func (HDR *HumanDateReader) GetBirthAndDeathDate() []string {
 
 func (HDR *HumanDateReader) GetPlaceAndDateOfСonscription() string {
 
-	placeAndDateOfСonscription := HDR.textFormatter.ExtractDataFromText(HDR.text, "Место и дата призыва", "<br>")
+	placeAndDateOfСonscription := HDR.textFormatter.ExtractDataFromText(HDR.text, "Место и дата призыва:", "<br>")
 
 	return placeAndDateOfСonscription
 }
