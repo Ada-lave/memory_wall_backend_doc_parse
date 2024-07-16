@@ -74,7 +74,14 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 }
 
 func (MS *MemoryWallService) InjectionFIO(file *multipart.FileHeader, humanInfo *models.HumanInfo) {
-	FIO := strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ")
+	var FIO []string
+	data := strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ")
+
+	for _, fio := range data {
+		if fio != "" {
+			FIO = append(FIO, fio)
+		}
+	}
 	switch len(FIO) {
 	case 1:
 		humanInfo.FirstName = FIO[0]
