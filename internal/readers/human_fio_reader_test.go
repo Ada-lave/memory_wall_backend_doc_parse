@@ -8,11 +8,10 @@ import (
 
 func initHumanFIOReader(text string) *HumanFIOReader {
 	return &HumanFIOReader{
-			textFormatter: &utils.TextFormatter{},
-			text: text,
-		}
+		textFormatter: &utils.TextFormatter{},
+		text:          text,
+	}
 }
-
 
 // TODO: Сделать рабочаю логику
 

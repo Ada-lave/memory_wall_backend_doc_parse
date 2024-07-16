@@ -9,7 +9,7 @@ type ParseDocxRequest struct {
 type ParseDocxResponse struct {
 	Filename  string `json:"filename"`
 	HumanInfo `json:"human_info"`
-	Errors []string `json:"errors"`
+	Errors    []string `json:"errors"`
 }
 
 type HumanInfo struct {

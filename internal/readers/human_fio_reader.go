@@ -7,7 +7,7 @@ import (
 )
 
 type HumanFIOReader struct {
-	text string
+	text          string
 	textFormatter *utils.TextFormatter
 }
 
@@ -20,7 +20,7 @@ func NewHumanFIOReader(text string) (HumanFIOReader, error) {
 func (HFR *HumanFIOReader) GetFIO() []string {
 	var splittedText []string
 
-	text  := strings.ReplaceAll(HFR.text, " <br>", "<br>")
+	text := strings.ReplaceAll(HFR.text, " <br>", "<br>")
 
 	// Избавляемся от пустых слов
 	for _, word := range strings.Split(text, "<br>") {
@@ -57,9 +57,9 @@ func (HFR *HumanFIOReader) GetFIO() []string {
 		}
 	case 1:
 		// All on different line
-		if len(splittedText) > 2 && 
-			!utils.CheckStringIsDate(splittedText[0]) && 
-			!utils.CheckStringIsDate(splittedText[1]) && 
+		if len(splittedText) > 2 &&
+			!utils.CheckStringIsDate(splittedText[0]) &&
+			!utils.CheckStringIsDate(splittedText[1]) &&
 			(!utils.CheckStringIsDate(splittedText[2])) {
 
 			fio = append(fio, splittedText[1])

@@ -15,7 +15,6 @@ import (
 type HumanInfoReader struct {
 	utils.DocxReader
 	textFormatter *utils.TextFormatter
-	dateTool      *utils.DateParseTool
 }
 
 func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
@@ -29,8 +28,6 @@ func (HIR *HumanInfoReader) GetFullDescription(sep string) string {
 				case *docx.Hyperlink:
 					if len(pc.(*docx.Hyperlink).Run.Children) > 1 {
 						buf.WriteString(fmt.Sprintf("%v", pc.(*docx.Hyperlink).Run.Children[0].(*docx.Text).Text))
-					} else {
-						// fmt.Printf("%#v\n", pc.(*docx.Hyperlink).Run)
 					}
 				case *docx.Run:
 					for _, text := range pc.(*docx.Run).Children {
@@ -56,36 +53,6 @@ func (HIR *HumanInfoReader) GetPlaceOfBirth() string {
 	placeOfBirth := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Место рождения", "<br>")
 
 	return placeOfBirth
-}
-
-func (HIR *HumanInfoReader) GetMilitaryRank() string {
-	if HIR.FullText == "" {
-		HIR.GetFullDescription("<br>")
-	}
-
-	rank := HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание, должность", "<br>")
-
-	if len(rank) == 0 {
-		rank = HIR.textFormatter.ExtractDataFromText(HIR.FullText, "Воинское звание", "<br>")
-	}
-
-	return rank
-}
-
-func (HIR *HumanInfoReader) GetMedals() []string {
-	var awards []string
-	if HIR.FullText == "" {
-		HIR.GetFullDescription("<br>")
-	}
-	if strings.Contains(HIR.FullText, "Награды:") {
-		textOfMedal := strings.Split(HIR.FullText, "Награды:")[1]
-		for _, medal := range strings.Split(textOfMedal, "<br>") {
-			if medal != "" && strings.Contains(strings.ToLower(medal), "медаль") {
-				awards = append(awards, medal)
-			}
-		}
-	}
-	return awards
 }
 
 func (HIR *HumanInfoReader) GetImages() ([]models.HumanInfoImage, error) {
