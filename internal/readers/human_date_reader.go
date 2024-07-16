@@ -6,8 +6,8 @@ import (
 )
 
 type HumanDateReader struct {
-	text string
-	dateTool utils.DateParseTool
+	text          string
+	dateTool      utils.DateParseTool
 	textFormatter utils.TextFormatter
 }
 
@@ -50,8 +50,6 @@ func (HDR *HumanDateReader) GetPlaceAndDateOfСonscription() string {
 }
 
 func NewHumanDateReader(text string) (HumanDateReader, error) {
-
-
 	return HumanDateReader{
 		text: text,
 	}, nil

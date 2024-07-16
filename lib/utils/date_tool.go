@@ -78,7 +78,7 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 		}
 
 		return stringTime.UTC().String(), nil
-	
+
 	case 4:
 		if string(date[len(date)-1]) == "³" {
 			date = strings.TrimSuffix(date, "³")
@@ -101,7 +101,7 @@ func (DPT *DateParseTool) ParseDateFromString(date string) (string, error) {
 
 			return stringTime.UTC().String(), nil
 		}
-		
+
 	}
 
 	return stringTime.UTC().String(), nil
