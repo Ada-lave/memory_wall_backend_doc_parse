@@ -25,19 +25,40 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			return []models.ParseDocxResponse{}, err
 		}
 
-		// MS.SaveBadFile(openedFile, file.Filename)
+		fileResponse := models.ParseDocxResponse{
+			Filename: utils.GetFileNameWithOutExt(file.Filename),
+		}
 
 		if file.Size < 1 {
-			response = append(response, models.ParseDocxResponse{
-				Filename: "err",
-			})
-			continue
+			fileResponse.Errors = append(fileResponse.Errors, "file size 1")
+			
 		}
 		humanReader, err := readers.NewHumanInfoReader(openedFile, file.Size)
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
-				Filename: "err",
-			})
+			fileResponse.Errors = append(fileResponse.Errors, err.Error())
+			var humanInfo models.HumanInfo
+			FIO :=  strings.Split(utils.GetFileNameWithOutExt(file.Filename), " ") 
+			
+			switch len(FIO) {
+			case 1:
+				humanInfo.FirstName = FIO[0]
+			case 2:
+				humanInfo.LastName = FIO[0]
+				humanInfo.FirstName = FIO[1]
+			case 3:
+				humanInfo.MiddleName = FIO[2]
+				humanInfo.LastName = FIO[0]
+				humanInfo.FirstName = FIO[1]
+			case 4:
+				humanInfo.MiddleName = FIO[2]
+				humanInfo.LastName = FIO[0]
+				humanInfo.FirstName = FIO[1]
+			default:
+				humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
+			}
+
+			fileResponse.HumanInfo = humanInfo
+			response = append(response, fileResponse)
 			continue
 		}
 
@@ -45,18 +66,14 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 
 		dateAndPlaceOfСonscription, err := MS.ExtractPlaceAndDateOfСonscription(humanReader.FullText)
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
-				Filename: "err",
-			})
-			continue
+			fileResponse.Errors = append(fileResponse.Errors, err.Error())
+		
 		}
 
 		images, err := humanReader.GetImages()
 		if err != nil {
-			response = append(response, models.ParseDocxResponse{
-				Filename: "err",
-			})
-			continue
+			fileResponse.Errors = append(fileResponse.Errors, err.Error())
+		
 		}
 
 		var humanInfo models.HumanInfo = models.HumanInfo{
@@ -78,6 +95,10 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			humanInfo.MiddleName = FIO[2]
 			humanInfo.LastName = FIO[0]
 			humanInfo.FirstName = FIO[1]
+		case 4:
+			humanInfo.MiddleName = FIO[2]
+			humanInfo.LastName = FIO[0]
+			humanInfo.FirstName = FIO[1]
 		default:
 			humanInfo.Name = utils.GetFileNameWithOutExt(file.Filename)
 		}
@@ -92,12 +113,10 @@ func (MS *MemoryWallService) ParseDocx(files []multipart.FileHeader) ([]models.P
 			humanInfo.Birthday = birthDates[0]
 			humanInfo.Deathday = birthDates[1]
 		}
-
-		var resp models.ParseDocxResponse = models.ParseDocxResponse{
-			Filename:  utils.GetFileNameWithOutExt(file.Filename),
-			HumanInfo: humanInfo,
-		}
-		response = append(response, resp)
+		
+		fileResponse.HumanInfo = humanInfo
+		
+		response = append(response, fileResponse)
 	}
 	return response, nil
 }
